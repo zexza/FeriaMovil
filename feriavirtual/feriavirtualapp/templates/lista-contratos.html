@@ -1,0 +1,45 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="table-responsive" >  
+  <table class="table table-light table-striped ">
+    <thead class="thead-dark">
+      <tr class="table-active ">
+              
+        <td><b>Productor</b></td>
+          
+        <td><b>Fecha Inicio</b></td>
+      
+        <td><b>Fecha Termino</b></td>
+
+        <td><b>Vigencia</b></td>
+      </tr>
+    </thead>
+      
+    {% for c in cont %} 
+      <tr>
+      
+        <td>{{ c.usuario.username }}</td>
+         
+        
+        <td>{{ c.fecha_inicio|date:"d/m/Y" }}</td>
+    
+        <td>{{ c.fecha_termino|date:"d/m/Y" }}</td>
+  
+        <td>
+          {% if c.vigencia == True  %}
+            Vigente
+          {% else %}
+            No vigente
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    
+  </table>
+    
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div>
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p id="dni">
+            <label>Proporcione el dni del destinatario:</label>
+            <input type="text" name="dni" >
+        </p>
+        <input type="submit"  class="btn-mod  rounded "  style="background-color:#22d14edb" value="Continuar">
+    </form>
+</div>
+
+
+
+
+
+{% endblock %}

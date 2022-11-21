@@ -1,0 +1,30 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+<h1>Solicitudes de pago.</h1>
+{% for n in notis %}
+
+<article >
+<div class="container-article" style="background-color:#999999" >
+    <div class="cont-noti">
+        
+        <br>
+
+        <h2>Enviado por: {{n.post.user.username}}</h2>
+        <h2>Fruta total: {{n.post.cantidad_actual}} Kg</h2>
+        {% for parts in n.post.participantes %}
+        <h2>Participantes: {{parts.username}}</h2>
+        {% endfor %}
+        <br>
+        <h2>Total: ${{n.total}}</h2>
+        <a class="notificar" href="{% url 'pagar' total=n.total pk=n.pk %}">
+            <input type="submit" class=" rounded "  style="background-color:#22d14edb"  value="Pagar">
+        </a>
+  
+    </div>
+</div>
+</article>
+
+
+{% endfor %}
+{% endblock %}

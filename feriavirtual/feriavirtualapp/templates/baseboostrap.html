@@ -1,0 +1,405 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FERIA VIRTUAL</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/flexboxgrid.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/seguimiento.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cssboostrapside.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'Static shop/css/styles.css' %}">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/b7f0f5763e.js" crossorigin="anonymous"></script>
+    
+    <!-- CSS only -->
+
+  
+</head>
+<body class="body" id="body">
+<!-- Image and text -->
+
+
+
+
+<div class="wrapper" >
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Maipo Grande!</h3>
+        </div>
+
+        <ul class="list-unstyled components">
+            {%if request.user.is_authenticated %}
+            <p>@{{ user.get_username }}</p>
+            <div style="margin:10px">
+              <img style="width: 300px; height: 225px; object-fit: cover; "class="img-perfil img-fluid img-thumbnail mt-4 mb-2" src="{{ request.user.imagen.url }}" alt="Generic placeholder image">
+            </div>
+
+            {% endif %}  
+
+            <li class="nav-op active">
+              {% if request.user.rol == "1"%}  <!--Productor -->
+              <a href="{% url 'solicitudesProductor' %}" >Solicitudes Productos</a>
+              <a href="{% url 'seguimientoLista' %}" >Seguimiento productos</a>
+              <a href="{% url 'ingresar-productos'  %}" >Ingresar Productos</a>
+              <a href="{% url 'mis-productos' %}" >Mis Productos</a>
+              {% endif %}  
+
+              {% if request.user.rol == "2"  %}  <!--Cliente externo -->
+
+              <a href="{% url 'seguimientoLista' %}" >Seguimiento</a>
+              <a href="{% url 'solicitudClientes' %}" >Solicitud</a>
+              <a href="{% url 'solicitudesClienteExterno' %}" >Solicitudes</a>
+
+              {% endif %}  
+
+
+              {% if request.user.rol == "3"  %}  <!--Cliente interno -->
+
+              <a href="{% url 'seguimientoLista' %}">Seguimiento</a>
+              <a href="{% url 'solicitudClientes' %}" >Solicitud</a>
+              <a href="{% url 'solicitudesClienteExterno' %}" >Solicitudes</a>
+              <a href="{% url 'Ventalocal' %}" >Venta local</a>
+              {% endif %}  
+
+              {% if request.user.rol == "4"  %}  <!--Transportista -->
+               <a href="{% url 'registrarTransporte' %}">Registrar Transporte</a>
+               <a href="{% url 'solicitudesTransportista' %}" >Envios activos</a>
+               <a href="{% url 'transportesRegistrados' %}">Transportes registrados</a>
+              {% endif %}  
+
+              {% if request.user.rol == "5"  %}  <!--Consultor -->
+               <a href="{% url 'seguimientoLista' %}"  >Seguimiento</a>
+              {% endif %}  
+
+
+              {% if request.user.rol == "6"%}  <!--admin -->
+              <a href="http://127.0.0.1:8000/admin/"  >Sitio Administracion</a>
+              <a href="{% url 'gestionContratos' %}" >Gestion de contratos</a>
+              <a href="{% url 'register' %}" >Registrar Usuario</a>
+              <a href="{% url 'Solicitud' %}" >Solicitud</a>
+              <a href="{% url 'Solicitudes' %}" >Solicitudes</a>
+              <a href="#" >Productores</a>
+              {% endif %}  <!--admin -->
+              
+              {% if request.user.rol == "7"  %}  <!--Revisor de calidad -->
+              <a href="{% url 'solicitudesRevisor' %}" >Revisiones pendientes</a>
+              {% endif %}  
+
+
+
+
+  
+             <!-- <ul class="collapse list-unstyled" id="homeSubmenu"></ul>*/ -->
+          </li>            
+        </ul>
+    
+      
+
+                
+
+        {% if user.is_authenticated %}
+        <ul class="list-unstyled CTAs">
+            <li>
+                <a href="{% url 'logout' %}" class="download" style="color: #000;">Cerrar Sesion</a>
+            </li>
+        </ul>
+        {% else %}
+        <ul class="list-unstyled CTAs">
+          <li>
+            <a href="{% url 'login' %}" class="download" style="color: #000;">Ingresar</a>
+            <a href="{% url 'register-interno' %}" class="download" style="color: #000;">Registrarse</a>
+          </li>
+      </ul>
+
+        {% endif%}
+    </nav>
+
+
+
+
+    <!-- Page Content  -->
+
+
+    <div id="content">
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed-top">
+  <button type="button" id="sidebarCollapse" class="btn btn-light">
+    <i class="fas fa-align-left"></i>
+    <span></span>
+  </button>
+  
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="fas fa-align-left"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li id="nav-none"  class="nav-item">
+
+          {% if request.user.rol == "1"%}  <!--Productor -->
+
+          <a class="nav-link" href="{% url 'solicitudesProductor' %}" >Seguimiento Productos</a>
+          <a class="nav-link" href="{% url 'ingresar-productos'  %}">Ingresar Productos</a>
+          <a class="nav-link" href="{% url 'mis-productos' %}" >Mis Productos</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+
+          {% endif %}  
+
+          {% if request.user.rol == "2"  %}  <!--Cliente externo -->
+
+          <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
+          <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
+          <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+
+          {% endif %}  
+
+
+          {% if request.user.rol == "3"  %}  <!--Cliente interno -->
+
+          <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
+          <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
+          <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+
+          {% endif %}  
+
+          {% if request.user.rol == "4"  %}  <!--Transportista -->
+          <a class="nav-link" href="{% url 'registrarTransporte' %}" >Registrar Transporte</a>
+          <a class="nav-link" href="{% url 'solicitudesTransportista' %}" >Envios activos</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          {% endif %}  
+
+          {% if request.user.rol == "5"  %}  <!--Consultor -->
+          <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          {% endif %}  
+
+
+          {% if request.user.rol == "6"%}  <!--admin -->
+          <a class="nav-link" href="http://127.0.0.1:8000/admin/" >Sitio Administracion</a>
+          <a class="nav-link" href="{% url 'gestionContratos' %}" > Gestion de contratos</a>
+          <a class="nav-link" href="{% url 'register' %}" > Registrar Usuario</a>
+          <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
+          <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
+          <a class="nav-link" href="#" >Productores</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          
+
+          {% endif %}  <!--admin -->
+          
+          {% if request.user.rol == "7"  %}  <!--Revisor de calidad -->
+          <a class="nav-link" href="{% url 'solicitudesRevisor' %}" >Revisiones pendientes</a>
+
+        	
+          {% endif %}  
+
+          {% if user.is_active == False %}
+
+          <a class="nav-link" href="{% url 'login' %}" style="background-color: rgb(142, 142, 142);">Ingresar</a>
+          <a class="nav-link" href="{% url 'register-interno' %}" style="background-color: rgb(142, 142, 142);">Registrarse</a>
+
+          {% endif %}  
+          
+
+
+
+         <!-- <ul class="collapse list-unstyled" id="homeSubmenu"></ul>*/ -->
+      </li>     
+    </ul>
+  </div>  
+</nav>
+
+
+
+    <!-- /#page-content-wrapper -->
+    {% if messages %}
+      {% for message in messages %}
+      <div class="notification {{ message.tags}}">
+        {{ message }}
+      </div>
+      {% endfor %}
+	  {% endif %}
+    {% block content %}
+    {% endblock %}
+
+  </div>
+
+  <!-- /#wrapper -->
+
+  
+</div>
+
+
+
+
+<!-- Remove the container if you want to extend the Footer to full width. -->
+<div class="container my-5">
+    <!-- Footer -->
+    <footer
+            class="text-center text-lg-start text-dark"
+            style="background-color: #ECEFF1"
+            >
+      <!-- Section: Social media -->
+      <section
+               class="d-flex justify-content-between p-4 text-white"
+               style="background-color:#8cc080;"
+               >
+        <!-- Left -->
+        <div class="me-5">
+          <span>Mantente conectado con nosotros por nuestras redes sociales:</span>
+        </div>
+        <!-- Left -->
+  
+        <!-- Right -->
+        <div>
+          <a href="" class="text-white me-4">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="" class="text-white me-4">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="" class="text-white me-4">
+            <i class="fab fa-google"></i>
+          </a>
+          <a href="" class="text-white me-4">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="" class="text-white me-4">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="" class="text-white me-4">
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <!-- Right -->
+      </section>
+      <!-- Section: Social media -->
+  
+      <!-- Section: Links  -->
+      <section class="">
+        <div class="container text-center text-md-start mt-5">
+          <!-- Grid row -->
+          <div class="row mt-3">
+            <!-- Grid column -->
+            <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+              <!-- Content -->
+              <h6 class="text-uppercase fw-bold">Maipo Grande</h6>
+              <hr
+                  class="mb-4 mt-0 d-inline-block mx-auto"
+                  style="width: 60px; background-color: #7c4dff; height: 2px"
+                  />
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem reiciendis sint vero assumenda pariatur quaerat sit ea quas voluptatum mollitia! Nihil exercitationem harum at itaque natus tenetur illo tempore nemo.
+              </p>
+            </div>
+            <!-- Grid column -->
+  
+            <!-- Grid column -->
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+              <!-- Links -->
+              <h6 class="text-uppercase fw-bold">Products</h6>
+              <hr
+                  class="mb-4 mt-0 d-inline-block mx-auto"
+                  style="width: 60px; background-color: #7c4dff; height: 2px"
+                  />
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande</a>
+              </p>
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande</a>
+              </p>
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande</a>
+              </p>
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande Maipo Grande</a>
+              </p>
+            </div>
+            <!-- Grid column -->
+  
+            <!-- Grid column -->
+            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+              <!-- Links -->
+              <h6 class="text-uppercase fw-bold">Maipo Grande Maipo Grande</h6>
+              <hr
+                  class="mb-4 mt-0 d-inline-block mx-auto"
+                  style="width: 60px; background-color: #7c4dff; height: 2px"
+                  />
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande Maipo Grande</a>
+              </p>
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande an Maipo Grande</a>
+              </p>
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande Maipo Grande</a>
+              </p>
+              <p>
+                <a href="#!" class="text-dark">Maipo Grande</a>
+              </p>
+            </div>
+            <!-- Grid column -->
+  
+            <!-- Grid column -->
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+              <!-- Links -->
+              <h6 class="text-uppercase fw-bold">Maipo Grande</h6>
+              <hr
+                  class="mb-4 mt-0 d-inline-block mx-auto"
+                  style="width: 60px; background-color: #7c4dff; height: 2px"
+                  />
+              <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
+              <p><i class="fas fa-envelope mr-3"></i> info@example.com</p>
+              <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
+              <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+            </div>
+            <!-- Grid column -->
+          </div>
+          <!-- Grid row -->
+        </div>
+      </section>
+      <!-- Section: Links  -->
+  
+      <!-- Copyright -->
+      <div
+           class="text-center p-3"
+           style="background-color: rgba(0, 0, 0, 0.2)"
+           >
+        © 2022 Copyright:
+        <a class="text-dark" href="#"
+           >Feria Virtual Maipo Grande</a
+          >
+      </div>
+      <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+  </div>
+  <!-- End of .container -->
+<script src="{% static 'assets/extra-libs/multicheck/datatable-checkbox-init.js' %}"></script>
+<script src="{% static 'assets/extra-libs/multicheck/jquery.multicheck.js' %}"></script>
+<script src="{% static 'assets/extra-libs/DataTables/datatables.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="application/javascript" src="{% static 'js/jsboostrapside.js' %}"></script>
+<script type="application/javascript" src="{% static 'js/status.js' %}"></script>
+<script type="application/javascript" src="{% static 'js/popup.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<script type="application/javascript" src="{% static 'js/script.js' %}" ></script>
+
+</body>
+</html>
+
+
+

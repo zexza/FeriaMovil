@@ -1,0 +1,84 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% load static %}
+{% block content %}
+<article>
+    <div class="container-article">
+         <div class="col-12 col-md-8 col-lg-8">
+            <body>
+                <h2> Resultados de la Transacción </h2>
+                <table border="1">
+                    <tr>
+                    <td>Resultado autenticación : </td>
+                    <td>{{response.vci}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Monto : </td>
+                    <td> {{ response.amount}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Estado :</td>
+                    <td> {{ response.status}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Numero orden : </td>
+                    <td> {{ response.buy_order}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Numero sesión : </td>
+                    <td> {{ response.session_id}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Detalle tarjeta : </td>
+                    <td> {{ response.card_detail}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Fecha autorización : </td>
+                    <td> {{ response.accounting_date}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Fecha y hora autorización :</td>
+                    <td> {{ response.transaction_date}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Código autorización :</td>
+                    <td> {{ response.authorization_code}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Tipo de pago :</td>
+                    <td> {{ response.payment_type_code}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Código respuesta :</td>
+                    <td> {{ response.response_code}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Monto de las cuotas :</td>
+                    <td> {{ response.installments_amount}}</td>
+                    </tr>
+                    <div class="linea-blanca"></div>
+                    <tr>
+                    <td>Cantidad de cuotas : </td>
+                    <td> {{ response.installments_number}}</td>     
+                </table>
+            </body>
+
+
+</div>
+<br>
+
+</div>
+</div>
+</article>
+{% endblock %}

@@ -1,0 +1,20 @@
+Profesor:
+Las claves de usuario estan en el archivo "Claves de usuario.txt"
+
+También recordarle que debe instalar los requerimientos del archivo 'requirements.txt' con el siguiente cmd: 
+pip install requirements.txt
+en caso de no funcionar, instalar los modulos necesarios manualmente para ejecutar.
+
+Dejamos agregado en la base de datos algunos usuarios y tambien un proceso de venta al extranjero.
+
+Al crear un proceso de venta, en el campo de "cliente", seleccionar "Perfil de Extranjero".
+Para generar una transaccion aprobada por transbank debe usar la siguiente tarjeta:
+4051 8842 3993 7763
+
+y para transacciones rechazadas:
+5186 0085 4123 3829
+
+
+Cualquier duda no dude en escribir.
+
+x4no195

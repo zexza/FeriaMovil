@@ -1,0 +1,72 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="main">
+  <div class="table-responsive">
+    <table class="table table-light table-striped">
+      <tr class="table-active">
+      
+          <td><b>Usuario </b></td>
+          <td><b>Producto</b></td>
+          <td><b>Variedad</b></td>
+          <td><b>Calibre</b></td>
+          <td><b>Cantidad_actual</b></td>
+          <td><b>Cantidad_necesaria</b></td>
+          <td><b>Contenido</b></td>
+          <td><b>Cliente</b></td>
+          <td><b>Fecha_creacion</b></td>
+          <td><b>Destino</b></td>
+          <td><b>Codigo Postal</b></td>
+          <td><b>Estado productos</b></td>
+          <td><b>Imagen</b></td>
+          <td><b>Notificar entrega de productos</b></td>
+
+        {% for s in solip %} 
+        <tr>
+      
+            <td>{{ s.usuario.username }}</td>
+        
+            <td>{{ s.get_producto_display }}</td>
+    
+            <td>{{ s.variedad }}</td>
+            
+            <td>{{ s.get_calibre_display }}</td>
+  
+            <td>{{ s.cantidad_actual }}</td>
+
+            <td>{{ s.cantidad_necesaria }}</td>
+
+            <td>{{ s.contenido }}</td>
+
+            <td>{{ s.cliente }}</td>
+
+            <td>{{ s.fecha_creacion|date:"d/m/Y" }}</td>
+
+            <td>{{ s.usuario.direccion }}</td>
+
+            <td>{{ s.usuario.codigopostal }}</td>
+
+            <td>{{ s.get_EstadoSolicitud_display }}</td>
+
+            {% if s.imagen %}
+            <td> <img style="height: 100px;"  src="{{ s.imagen.url }}"> </td>
+            
+            {% else %}
+            <td><b></b></td>
+            {% endif %}
+            <td><p class="boton_mod"><a  href="{% url 'modificarsolicitudProductor' s.pk%}"  style="background-color:#71da8cdb; color: black;">Actualizar estado</a></p></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+
+</div>
+
+
+
+  
+
+
+{% endblock %}

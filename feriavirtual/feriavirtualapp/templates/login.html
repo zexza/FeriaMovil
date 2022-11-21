@@ -1,0 +1,17 @@
+{% extends 'baseboostrap.html' %}
+
+{% block content %}
+<div class="main">
+    
+    <form class="form rounded "  style="background-color:#ffffffc1" method="POST">
+        <h1>¡Ingresa!</h1>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" class=" rounded "  style="background-color:#22d14edb" name="register" value="Ingresar">
+        <p class="registro">o también puedes <a href="{% url 'register-interno' %}"><b style="color: #00ba8ffe">registrarte.</b></a></p>
+    </form>
+    
+        
+   
+</div>
+{% endblock %}

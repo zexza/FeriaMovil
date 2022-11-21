@@ -1,0 +1,518 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+
+{% block content %}
+
+{% for s in solis %} 
+
+<div class="container-seguimiento padding-bottom-3x mb-1">
+        <div class="card mb-3">
+          <div class="p-4 text-center text-white text-lg bg-dark rounded-top"><span class="text-uppercase">Proceso de Venta - </span><span class="text-medium">34VB5540K83</span></div>
+          <div class="d-flex flex-wrap flex-sm-nowrap justify-content-between py-3 px-2 bg-secondary">
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Transportista:</span> UPS Ground</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Estado:</span> {{s.get_EstadoSolicitud_display}}</div>
+            <div class="w-100 text-center py-1 px-2"><span class="text-medium">Fecha estimada:</span> NOV 09, 2022</div>
+          </div>
+          <div class="card-body">
+            <div class="steps d-flex flex-wrap flex-sm-nowrap justify-content-between padding-top-2x padding-bottom-1x">
+
+
+
+              {% if s.EstadoSolicitud == "1" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Subasta de transporte</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "2" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Rechazada  </h4>
+              </div>
+              
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Subasta de transporte</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "3" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-pause"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Pendiente</h4>
+              </div>
+              <div class="step ">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Subasta de transporte</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "4" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">En subasta de transporte</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "5" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Transporte listo y esperando productos en bodega...</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "6" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "7" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+                <h4 class="step-title">Viaje interrumpido (Productor)</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "8" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">En revision de calidad...</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%}
+              {% if s.EstadoSolicitud == "9" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+                <h4 class="step-title">Rechazado en revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%} 
+              {% if s.EstadoSolicitud == "10" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+                <h4 class="step-title">Rechazado en revision de calidad</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%} 
+              {% if s.EstadoSolicitud == "11" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad superada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%} 
+              {% if s.EstadoSolicitud == "12" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad superada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-xmark"></i></i></div>
+                </div>
+                <h4 class="step-title">Viaje Interrumpido (Transportista)</h4>
+              </div>
+              <div class="step">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%} 
+              {% if s.EstadoSolicitud == "13" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad superada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-location-dot"></i></div>
+                </div>
+                <h4 class="step-title">Destino</h4>
+              </div>
+              {%endif%} 
+              {% if s.EstadoSolicitud == "14" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad superada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Aceptado por el destinatario</h4>
+              </div>
+              {%endif%} 
+              {% if s.EstadoSolicitud == "15" %}
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-check"></i></div>
+                </div>
+                <h4 class="step-title">Solicitud Aprobada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-spinner"></i></div>
+                </div>
+                <h4 class="step-title">Productos entregados en bodega</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-medal"></i></div>
+                </div>
+                <h4 class="step-title">Revision de calidad superada</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-truck-fast"></i></i></div>
+                </div>
+                <h4 class="step-title">En camino</h4>
+              </div>
+              <div class="step completed">
+                <div class="step-icon-wrap">
+                  <div class="step-icon"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+                <h4 class="step-title">Rechazado por el destinatario</h4>
+              </div>
+              {%endif%} 
+
+
+            </div>
+          </div>
+        </div>
+        <div class="d-flex flex-wrap flex-md-nowrap justify-content-center justify-content-sm-between align-items-center">
+          <div class="custom-control custom-checkbox mr-3">
+            <input class="custom-control-input" type="checkbox" id="notify_me" checked="">
+          </div>
+          <div class="text-left text-sm-right"><a class="btn btn-outline-primary btn-rounded btn-sm" href="{% url 'seguimientoDetalle' s.pk%}" >Ver detalles de proceso</a></div>
+        </div>
+      </div>
+
+{%endfor%}
+
+{% endblock %}

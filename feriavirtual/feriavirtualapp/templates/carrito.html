@@ -1,0 +1,128 @@
+{% extends 'baseboostrap.html' %}
+{% load static %}
+{% load cart_tags %}
+{% block content %}
+{% if request.user.rol == "3"  %} 
+<div class="container-fluid">
+    <div class="EspaciadoContenido rounded">
+        <div style="padding-top: 10px;"> </div>
+        <!-- {{cart_total_amount|money_format:"€" }} -->
+        <table class="table table-bordered rounded" style="background-color: rgb(255, 255, 255);">
+            <thead>
+               <tr>
+                   <th colspan="4" class="text-center">
+                       Carrito de compras
+                   </th>
+               </tr>
+               <tr>
+                   <th>Producto</th>
+                   <th>Cantidad</th>
+                   <th>Acciones</th>
+                   <th>Total</th>
+               </tr>
+           </thead>
+           <tbody>
+               {% if request.session.cart.items %}
+                  {% for key, value in request.session.cart.items %}
+                       <tr class="text-center">
+                           <td>{{ value.name }}</td>
+                           <td>{{ value.quantity }}</td>
+                           <td >
+                               <a style="color: #0f0;"
+                                   href="{% url 'add_product_carrito' value.product_id %}"
+                                   
+                               >
+                                <i class="fas fa-plus"></i>
+                               </a>  
+                               <a style="color: #ff0; "
+                                   href="{% url 'decrement_product' value.product_id %}"
+                                   
+                               >
+                               <i class="fas fa-minus"></i>
+                               </a>  
+                               <a style="color: #f00;"
+                                   href="{% url 'remove_product' value.product_id %}"
+                                   
+                               >
+                               <i class="fas fa-trash-alt"></i>
+                               </a>
+                              
+                               
+                               
+                               
+                               
+                               
+                            </td>
+                            <td>Total ${{ value.price|multiply:value.quantity}}</td>
+                       </tr>
+                  {% endfor %}
+               {% else %}
+                   <tr>
+                       <td colspan="4">
+                           <div class="alert alert-danger text-center">
+                               No tienes productos en el carrito
+                           </div>
+                       </td>
+                   </tr>
+               {% endif %}
+        
+           </tbody>
+           <tfoot>
+               <tr>
+                   <td colspan="4 ">
+                       Total: ${{ cart_total_amount }}
+                       
+                       
+
+                      
+                   </td>
+                   
+               </tr>
+               
+               {% if request.session.cart.items %}
+                   <tr>
+
+                   
+               {% endif %}
+
+               
+               
+                <td colspan="4">
+                 <button class="btn">
+                    <ul class="list-unstyled CTAs">
+                        <li>
+                            <a href="{% url 'clear_cart'%}" class="download" style="background-color: rgb(255, 221, 1); color: #ffffff;">Limpiar</a>
+                        </li>
+                    </ul>                    
+                 </button>
+                </td>
+
+
+
+            </tr>
+            <tr>
+
+                <form action="" method="post"><input type="hidden" name="Monto" value="{{ cart_total_amount }}" /></form>
+                   
+                <td colspan="4" >
+                    <!--{{response}}-->
+                    <br >
+                    <form action="{{ response.url }}" method="POST" class="rounded">
+                    <!--{% csrf_token %}-->
+                    <input type="hidden" name="token_ws" value="{{ response.token }}">
+                    <input style="background-color: #0f0;" class="rounded" type="submit" value="Ejecutar Pago con Webpay">
+                    </form>
+                    <br> 
+
+
+
+
+
+                </td>
+            </tr>
+           </tfoot>
+       </table>
+</div>
+</div>
+{% endif %} 
+{% endblock %}

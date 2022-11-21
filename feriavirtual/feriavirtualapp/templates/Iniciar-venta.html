@@ -1,0 +1,16 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="main">
+    
+    <form class="form rounded "  style="background-color:#ffffffc1" method="POST" enctype="multipart/form-data">
+        <h1>Inicia una venta!.</h1>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" name="register">
+    </form>
+</div>
+
+
+{% endblock %}

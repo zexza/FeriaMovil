@@ -1,0 +1,19 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+<article>
+    <div class="container-article">
+        <h1>Confirmación de pago.</h1>
+        
+        <h2>Total final: ${{total}}</h2>
+        
+        <form action="{{ response.url }}" method="POST" class="btn-pagar">{% csrf_token %}
+            <input type="hidden" name="token_ws" value="{{response.token}}">
+            <input type="hidden" name="username" value="{{request.user.username}}">
+            <img class="webpay" src="/media/webpay.png" alt="">
+            <input type="submit" value="Ejecutar Pago con Webpay">
+        </form>
+        <br>
+    </div>
+</article>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+
+{% block content %}
+<br>
+<br>
+<div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table
+          id="zero_config"
+          class="table table-striped table-bordered" style="font-size: 12px">
+         
+          <thead>
+            <tr>
+              <th>Numero de seguimiento</th>
+              <th>Estado</th>
+              <th>Fecha Modificacion</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in solis  %}
+            <tr>
+                <td>{{ s.idpost.id }}</td>
+                <td>{{ s.get_EstadoSolicitud_display }}</td>
+                <td>{{ s.fecha_modificacion|date:"d/m/Y" }}</td>
+
+            </tr>
+        {% endfor %}
+          </tbody>
+
+        </table>
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}

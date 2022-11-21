@@ -1,0 +1,15 @@
+superuser:admin
+
+administrador:prueba123
+
+productor:prueba123
+
+revisor:prueba123
+
+transportista:prueba123
+
+clienteE:prueba123 dni:	15325719-1
+
+
+
+

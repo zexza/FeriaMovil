@@ -1,0 +1,45 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="main">
+  <div class="table-responsive">
+    <table class="table table-light table-striped">
+      <tr class="table-active">
+          <td><b>Tamaño</b></td>
+          <td><b>Refrigeracion</b></td>
+          <td><b>Tarifa</b></td>
+          <td><b>Disponibilidad</b></td>
+          <td><b>ModEstado</b></td>
+
+        {% for t in transp %} 
+        <tr>
+      
+            <td>{{ t.get_tamaño_display  }}</td>
+        
+            <td>   
+            {% if t.refrigeracion == True  %}
+              Refrigerado
+            {% else %}
+              No Refrigerado  
+            {% endif %}</td>
+    
+            <td>{{ t.tarifa }}</td>
+
+            <td>
+            {% if t.disponible == True  %}
+              Disponible
+            {% else %}
+              No disponible
+            {% endif %}
+            </td>
+
+            <td><p class="boton_mod rounded "><a>Modificar</a></p></td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+
+</div>
+{% endblock %}

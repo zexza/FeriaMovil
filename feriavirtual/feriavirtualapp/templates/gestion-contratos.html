@@ -1,0 +1,14 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="main">
+
+    
+    <a href="{% url 'contratos' %}" ><input class="rounded" style="background-color:#8cc080" type="submit" value="Crear nuevo contrato"></input></a>
+    <a href="{% url 'listaContratos' %}"><input class="rounded" style="background-color:#8cc080" type="submit" value="Lista de contratos"></input></a>
+
+</div>
+
+
+{% endblock %}

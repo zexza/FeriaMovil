@@ -1,0 +1,33 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+<article>
+    <div class="container-article">
+        <h2>Participantes: </h2>
+        {% for p in parts %}
+            <p>{{p.username}}</p>
+        {% endfor %}
+
+        <h2>Cantidad ofrecida por productor: </h2>
+        {% for r in rel %}
+            <div>{{ r}} Kg</div>
+        {% endfor %}
+
+        <h2>Cantidad total :</h2>
+         {{post.cantidad_actual}} Kg
+        <h2>Precio:</h2>
+        {% for prod in prods %}    
+        <div>
+            {{prod.autor.username}}: ${{prod.precio}} x kg
+        </div>
+        {% endfor %}
+        <h2>Total final:</h2>
+         ${{total}}
+        <a class="notificar" href="{% url 'notificar' pk=post.pk  %}">
+            <input type="submit" value="Concretar venta">
+        </a>
+        <h6>Se notificará al cliente y se iniciara la subasta de transporte</h6>
+        <br>
+    </div> 
+</article>
+{% endblock %}

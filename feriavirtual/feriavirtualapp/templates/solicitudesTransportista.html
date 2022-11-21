@@ -1,0 +1,78 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div class="main">
+  <div class="table-responsive">
+    <table class="table table-light table-striped">
+      <tr class="table-active">
+      
+          <td><b>usuario </b></td>
+          <td><b>Producto</b></td>
+          <td><b>variedad</b></td>
+          <td><b>Calibre</b></td>
+          <td><b>cantidad_actual</b></td>
+          <td><b>cantidad_necesaria</b></td>
+          <td><b>contenido</b></td>
+          <td><b>cliente</b></td>
+          <td><b>fecha_creacion</b></td>
+          <td><b>Direccion</b></td>
+          <td><b>Codigo Postal</b></td>
+          <td><b>Estado Solicitud Compra</b></td>
+
+          <td>Imagen</td>
+
+          <td><b>ModEstado</b></td>
+
+        {% for s in solit %} 
+        <tr>
+      
+            <td>{{ s.usuario.username }}</td>
+        
+            <td>{{ s.get_producto_display }}</td>
+    
+            <td>{{ s.variedad }}</td>
+            
+            <td>{{ s.get_calibre_display }}</td>
+  
+            <td>{{ s.cantidad_actual }}</td>
+
+            <td>{{ s.cantidad_necesaria }}</td>
+
+            <td>{{ s.contenido }}</td>
+
+            <td>{{ s.cliente }}</td>
+
+            <td>{{ s.fecha_creacion|date:"d/m/Y" }}</td>
+
+            <td>{{ s.usuario.direccion }}</td>
+
+            <td>{{ s.usuario.codigopostal }}</td>
+
+            <td>{{ s.get_EstadoSolicitud_display }}</td>
+
+            {% if s.imagen %}
+            <td> <img style="height: 100px;"  src="{{ s.imagen.url }}"> </td>
+            
+            {% else %}
+            <td><b></b></td>
+            {% endif %}
+            {% if s.EstadoSolicitud == "13" %}
+            <td></td>
+            {% else %}
+            <td><p class="boton_mod rounded "  ><a  href="{% url 'modificarSolicitudTransportista' s.pk%}">Modificar</a></p></td>
+            {% endif %} 
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+
+</div>
+
+
+
+  
+
+
+{% endblock %}

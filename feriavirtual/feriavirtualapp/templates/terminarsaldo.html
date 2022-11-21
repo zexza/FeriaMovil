@@ -1,0 +1,83 @@
+{% extends 'baseboostrap.html' %}
+{% load static %}
+{% load cart_tags %}
+{% block content %}
+<div class="container-fluid">
+    <div class="EspaciadoContenido">
+    {%if response.status == "AUTHORIZED"%}
+        {%if response.response_code == 0 %} 
+            <table style="background-color:#00FF00">
+            </tr>
+                <tr>
+                <td>Resultado autenticación tarjetahabiente : </td>
+                {%if response.vci == "TSY"%}
+                <td>Autenticación exitosa</td>
+                {% else %}
+                <td>{{response.vci}}</td>
+                {%endif%}
+  
+                </tr>
+                <tr>
+                <td>Monto : </td>
+                <td> {{ response.amount}}</td>
+                </tr>
+                <tr>
+                <td>Estado :</td>
+                <td> {{ response.status}}</td>
+                </tr>
+                <tr>
+                <td>Numero orden : </td>
+                <td> {{ response.buy_order}}</td>
+                </tr>
+                <tr>
+                <td>Numero sesion : </td>
+                <td> {{ response.session_id}}</td>
+                </tr>
+                <tr>
+                <td>detalle tarjeta : </td>
+                <td> {{ response.card_detail}}</td>
+                </tr>
+                <tr>
+                <td>Fecha autorización : </td>
+                <td> {{ response.accounting_date}}</td>
+                </tr>
+                <tr>
+                <td>Fecha y hora autorización :</td>
+                <td> {{ response.transaction_date}}</td>
+                </tr>
+                <tr>
+                <td>Código autorización  </td>
+                <td> {{ response.authorization_code}}</td>
+                </tr>
+                <tr>
+                <td>Tipo de pago: </td>
+                <td> {{ response.payment_type_code}}</td>
+                </tr>
+                <tr>
+                <td>Código respuesta : </td>
+                <td> {{ response.response_code}}</td>
+                </tr>
+                <tr>
+                <td>Monto de las cuotas : </td>
+                <td> {{ response.installments_amount}}</td>
+                </tr>
+                <tr>
+                <td>Cantidad de cuotas : </td>
+                <td> {{ response.installments_number}}</td>     
+            </table>
+        {%endif%}
+    {%endif%}
+    <form action="/reembolso.html" method="POST">
+        <input type="hidden" name="token_ws" value="{{ token }}">
+        <input type="hidden" name="amount" value="{{ response.amount|floatformat }}">
+        <input type="submit" class="btn btn-success" value="Reembolsar Transacci&oacute;n (Anular)">
+    </form>
+    
+
+
+</div>
+<br>
+
+</div>
+</div>
+{% endblock %}

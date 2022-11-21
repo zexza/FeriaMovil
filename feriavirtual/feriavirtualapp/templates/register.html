@@ -1,0 +1,11 @@
+{% extends 'baseboostrap.html' %}
+
+{% block content %}
+<div class="main">
+    <form class="form rounded "  style="background-color:#ffffffc1" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" class=" rounded "  style="background-color:#22d14edb" id="submit"></input>
+    </form>
+</div>
+{% endblock %}

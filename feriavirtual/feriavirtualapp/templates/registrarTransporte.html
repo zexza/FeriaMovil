@@ -1,0 +1,14 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<div>
+    <form method="POST"  class="rounded" style="background-color:#ffffffc1" action="">
+        {% csrf_token %}
+        {{ form.as_p }}     
+        
+        <input type="submit" class="btn-mod rounded "  style="background-color:#22d14edb"  value="Registrar">
+    </form>
+</div>
+
+{% endblock %}
