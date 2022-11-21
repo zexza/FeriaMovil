@@ -1,0 +1,248 @@
+* {
+	padding: 0;
+	margin: 0;
+	font-family: century gothic;
+	text-align: center;
+
+}
+
+td,
+  th {
+    vertical-align: middle;
+  }
+
+#dni {
+    display: none;
+}
+  
+.main{
+    margin: 50px 0;
+}
+#content{
+    background-image: url(../../../media/Fondos/fondo.png);
+}
+
+
+form {
+	padding: 50px 20px;
+	background-color: #ededed;
+	margin: 5%;
+	margin-top: 70px;
+	padding-top: 28px;
+	margin-bottom: 30px;
+}
+.btn-pagar{
+    background-color: transparent;
+}
+.cont-noti{
+    padding: 15px 0; 
+    border-bottom: 1px solid white;
+    border-radius: 50px;
+}
+h1 {
+	text-align: center;
+	padding: 12px;
+	color: rgb(173, 173, 173)
+}
+.mensaje{
+    
+    color: gray;
+    font-size: calc(0.7em);
+    display: inline-block;
+}
+.webpay{
+    width: 50vw;
+    height: auto;
+
+}
+select{
+    width: calc(100% - 20px);
+	padding: 9px;
+	margin: auto;
+	margin-top: 12px;
+	font-size: 16px;
+	color: black;
+}
+input,textarea,select,select option {
+	width: calc(100% - 20px);
+	padding: 9px;
+	margin: auto;
+	margin-top: 12px;
+	font-size: 16px;
+	color: black;
+}
+.registro {
+    color:black
+}
+.registro a{
+    color:black;
+    text-decoration: none;
+    
+}
+.registro a:hover{
+    cursor:pointer;
+    border-bottom: 2px solid #1AB6C4;
+    color: #1AB6C4;
+}
+p label, ul li{
+	color: black;
+}
+.form p textarea{
+    color: black;
+}
+.helptext {
+    color: black;
+}
+input[type='submit']{
+	background-color: #1AB6C4;
+	color: #fff;
+	width: calc(80% - 20px);
+	margin: 0 10%;
+	margin-top: 22px;
+	border: none;
+}
+input:hover{
+    cursor: pointer;
+}
+nav a{
+    font-weight: bold;
+    padding: 20px 0;
+    text-decoration: none;
+    list-style: none;
+    color: white;
+}
+nav a:hover{
+    background-color: white;
+    transition-duration: 1.5s;
+    color: #7cf8609e;
+}
+.contenedor-login{
+    background-color: #1AB6C4;
+    border-radius: 4px;
+
+}
+.contenedor-login a{
+    padding: 5px 0;
+    text-decoration: none;
+    list-style: none;
+    color: black;
+}
+.contenedor-login a:hover{
+    background-color: black;
+    transition-duration: 1.5s;
+    color: white;
+}
+/*Notifications*/
+.notification {
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.9rem;
+}
+.success {
+    background: #43DC7E;
+    color: white;
+}
+.error {
+    background: #AB3444;
+    color: white;
+    margin-bottom: 20px;
+}
+.warning{
+    background: #ff7323;
+    color: white;
+    margin-bottom: 20px;
+}
+.container-article{
+    padding: 20px 0;
+    margin: 20px 0px;
+   
+    width: 100%;
+    background-color: #303338;
+    border-radius: 16px;
+}
+.partis{
+    padding-left: 10px;
+    width: 50%;
+    text-align: left;
+}
+.partis p{
+    text-align: left;
+}
+article div img{
+    height: 40px;
+}
+.container-user{
+    text-align: left;
+    padding-left: 10px;
+    margin-left: 10px;
+}
+.container-user img{
+    border-radius: 50px;
+}
+.usuario{
+    display: inline-block;
+    padding: 0 0 20px 0;
+    text-align: left;
+}
+.username{
+    text-align: left;
+}
+
+.post-img{
+    width: 100%;
+    height: auto;
+}
+
+
+.cont-seguimiento{
+    margin: 20% 0;
+}
+.seguimiento-icons i{
+    font-size: 100px;
+}
+.seguimiento-icons p{
+    font-size: 42px;
+}
+.nav-op a:hover{
+    color: #8cc0809e;
+    background: #ededed;
+}
+nav a:hover{
+    color:#8cc0809e;
+}
+@media (min-width: 600px) {
+    form {
+        margin: 25%;
+        padding: 50px 20px;
+        background-color: #ededed;
+        margin-top: 70px;
+        padding-top: 28px;
+        margin-bottom: 30px;
+    }
+    .post-img{
+        width: 100%;
+        height: auto;
+    }
+    .post{
+        
+        text-align: left;
+    }
+    .container-article{
+        width: 60%;
+        
+    }
+    article{
+        display: flex;
+        justify-content: center;
+    }
+    .mensaje{
+        padding-left: 5px;
+        color: gray;
+        font-size: calc(0.6em);
+        display: inline-block;
+    }
+  }
+
+

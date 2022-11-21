@@ -18,8 +18,8 @@ class MainActivity : AppCompatActivity() {
 
 
         navegador=findViewById(R.id.navegador)
-        navegador?.loadUrl("http://www.google.com/redirigir")
-        navegador?.loadUrl("http://www.google.com")
+        navegador?.loadUrl("http://192.168.1.13:81/")
+        navegador?.loadUrl("http://192.168.1.13:81/")
 
         navegador?.webChromeClient = object : WebChromeClient(){
 
@@ -40,6 +40,6 @@ class MainActivity : AppCompatActivity() {
     fun cargar(view: View){
         navegador?.clearCache(false)
         navegador?.settings?.javaScriptEnabled=true
-        navegador?.loadUrl("http://www.google.com")
+        navegador?.loadUrl("http://192.168.1.13:81/")
     }
 }

@@ -24,7 +24,7 @@ SECRET_KEY = '&@6ghnnsg2^&$ddsq2i4=sk=q7(2p#dl@$8hq5*jg#_v1xu3p$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.13']
 
 
 # Application definition
@@ -130,6 +130,7 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 AUTH_USER_MODEL = 'feriavirtualapp.User'
 LOGIN_REDIRECT_URL = 'seguimientoLista'
 
