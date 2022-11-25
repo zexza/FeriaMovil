@@ -7,33 +7,39 @@
     <div class="row center-xs ">
 
         <div class="usuario">
-            <h2 class="username"><a href="">@{{ request.user.username }}</a></h2>           
+            <h2 class="username">{{ request.user.username }}</h2>           
         </div>
-            <table class="col-xs-12" >
-                <tr>
-                    <th>Tipo de fruta</th>    
-                    <th>Variedad</th>       
-                    <th>Cantidad (Cajas)</th>
-                    <th>Precio por caja($)</th> 
-                    <th>Fecha de subida</th>   
+        <Div class="table-responsive">
+            <table class="table table-light table-striped">
+                <tr class="table-active">
                     
-                    <th>Imagen</th>  
-                    <th>Modificar</th>  
-                    <th>Eliminar</th>  
-                </tr>
-                {% for p in prod %} 
-                <tr>
-                    <td>{{ p.get_producto_display }}</td>
-                    <td>{{ p.variedad }}</td>
-                    <td>{{ p.cantidad }}</td>
-                    <td>{{ p.precio }} </td>
-                    <td><i class="clock"></i><time data-time="#">{{ p.fecha_subida }}</time></td>
-                    <td> <img  src="{{ p.imagen.url }}"> </td>
-                    <td> <button>Modificar</button> </td>
-                    <td> <button>Eliminar</button> </td>
-                </tr>
+
+                        <th>Producto</th>    
+                        <th>Variedad</th>       
+                        <th>Cantidad (Cajas)</th>
+                        <th>Precio por caja($)</th> 
+                        <th>Fecha de subida</th>   
+                        
+                        <th>Imagen</th>  
+                        <th>Modificar</th>  
+                        <th>Eliminar</th>
+        
+                    {% for p in prod %} 
+                    <tr>
+                        <td>{{ p.get_producto_display }}</td>
+                        <td>{{ p.variedad }}</td>
+                        <td>{{ p.cantidad }}</td>
+                        <td>{{ p.precio }} </td>
+                        <td><i class="clock"></i><time data-time="#">{{ p.fecha_subida }}</time></td>
+                        <td> <img  src="{{ p.imagen.url }}"> </td>
+                        <td> <button>Modificar</button> </td>
+                        <td> <button>Eliminar</button> </td>
+                    </tr>
                 {% endfor %}
             </table>
+
+        </Div>
+
     </div>
 </article>
 {% endblock %}

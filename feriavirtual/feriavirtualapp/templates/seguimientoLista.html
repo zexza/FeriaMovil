@@ -30,7 +30,7 @@
                 <td>{{ s.id }}</td>
                 <td>{{ s.get_EstadoSolicitud_display }}</td>
                 <td>{{ s.fecha_creacion|date:"d/m/Y" }}</td>
-                <td><a href="{% url 'seguimiento' s.pk%}" class="btn btn-success">Seguimiento</a></td>
+                <td><a href="{% url 'seguimiento' s.pk%}" class="fa fa-search"></a></td>
 
             </tr>
         {% endfor %}

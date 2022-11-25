@@ -62,11 +62,12 @@
 
 
               {% if request.user.rol == "3"  %}  <!--Cliente interno -->
-
+              
               <a href="{% url 'seguimientoLista' %}">Seguimiento</a>
               <a href="{% url 'solicitudClientes' %}" >Solicitud</a>
               <a href="{% url 'solicitudesClienteExterno' %}" >Solicitudes</a>
               <a href="{% url 'Ventalocal' %}" >Venta local</a>
+              
               {% endif %}  
 
               {% if request.user.rol == "4"  %}  <!--Transportista -->
@@ -147,10 +148,11 @@
 
           {% if request.user.rol == "1"%}  <!--Productor -->
 
+          <a class="nav-link" href="{% url 'solicitudesProductor' %}" >Solicitudes Productos</a>
           <a class="nav-link" href="{% url 'solicitudesProductor' %}" >Seguimiento Productos</a>
           <a class="nav-link" href="{% url 'ingresar-productos'  %}">Ingresar Productos</a>
           <a class="nav-link" href="{% url 'mis-productos' %}" >Mis Productos</a>
-          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;" >Cerrar Sesion</a>
 
           {% endif %}  
 
@@ -159,29 +161,36 @@
           <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
           <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
           <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
-          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;" >Cerrar Sesion</a>
 
           {% endif %}  
 
 
           {% if request.user.rol == "3"  %}  <!--Cliente interno -->
 
+
+          
+
           <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
           <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
           <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
-          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
-
+          <a class="nav-link" href="{% url 'Ventalocal' %}" >Venta local</a>  
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;" >Cerrar Sesion</a>
+          
+        
           {% endif %}  
 
           {% if request.user.rol == "4"  %}  <!--Transportista -->
           <a class="nav-link" href="{% url 'registrarTransporte' %}" >Registrar Transporte</a>
           <a class="nav-link" href="{% url 'solicitudesTransportista' %}" >Envios activos</a>
-          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          <a class="nav-link" href="{% url 'transportesRegistrados' %}">Transportes registrados</a>
+
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;" >Cerrar Sesion</a>
           {% endif %}  
 
           {% if request.user.rol == "5"  %}  <!--Consultor -->
           <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
-          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;" >Cerrar Sesion</a>
           {% endif %}  
 
 
@@ -192,7 +201,7 @@
           <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
           <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
           <a class="nav-link" href="#" >Productores</a>
-          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142);" >Cerrar Sesion</a>
+          <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;" >Cerrar Sesion</a>
           
 
           {% endif %}  <!--admin -->
@@ -205,8 +214,8 @@
 
           {% if user.is_active == False %}
 
-          <a class="nav-link" href="{% url 'login' %}" style="background-color: rgb(142, 142, 142);">Ingresar</a>
-          <a class="nav-link" href="{% url 'register-interno' %}" style="background-color: rgb(142, 142, 142);">Registrarse</a>
+          <a class="nav-link" href="{% url 'login' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;">Ingresar</a>
+          <a class="nav-link" href="{% url 'register-interno' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;">Registrarse</a>
 
           {% endif %}  
           
