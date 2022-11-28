@@ -1,32 +1,67 @@
 package com.example.feriavirtual
 
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.*
+
 
 class MainActivity : AppCompatActivity() {
 
+    private var cargaView = false
+
     private var navegador:WebView?=null
+    private var ulrFeria = "http://192.168.1.15:81/"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         navegador=findViewById(R.id.navegador)
-        navegador?.loadUrl("http://192.168.1.13:81/")
-        navegador?.loadUrl("http://192.168.1.15:81/login/")
+        navegador?.clearCache(false)
+        navegador?.loadUrl(ulrFeria+"login/")
+        cargaView = false
+
         navegador?.webChromeClient = object : WebChromeClient(){
         }
         navegador?.webViewClient = object : WebViewClient(){
         }
+        navegador?.isInvisible = false
+
+
+        navegador?.webViewClient = object : WebViewClient(){
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                navegador?.isInvisible = true
+
+                super.onReceivedError(view, request, error)
+                cargaView = true
+                Toast.makeText(this@MainActivity,"error al cargar: $error", Toast.LENGTH_LONG).show()
+
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                if (cargaView == true){
+
+
+                }else{
+                    navegador?.isInvisible = false
+                }
+
+            }
+
+        }
+
+
     }
 
 
@@ -37,6 +72,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun backButton2(){
+        cargaView = false
         if (navegador?.canGoBack() == true){
             navegador?.goBack();
 
@@ -48,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
+
             R.id.id_back -> backButton2()
             R.id.id_restart -> cargar()
         }
@@ -56,9 +93,14 @@ class MainActivity : AppCompatActivity() {
 
 
     fun cargar(){
+        cargaView = false
+
         navegador?.clearCache(false)
         navegador?.settings?.javaScriptEnabled=true
-        navegador?.loadUrl("http://192.168.1.15:81/")
+        navegador?.loadUrl(ulrFeria)
+
+
+
     }
 
 

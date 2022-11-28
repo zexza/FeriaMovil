@@ -6,7 +6,7 @@
     <div class="EspaciadoContenido">
     {%if response.status == "AUTHORIZED"%}
         {%if response.response_code == 0 %} 
-            <table style="background-color:#ffea00">
+            <table style="background-color:#91ff00">
             </tr>
                 <tr>
                 <td>Resultado autenticación tarjetahabiente : </td>
@@ -42,7 +42,7 @@
                 <td> {{ response.accounting_date}}</td>
                 </tr>
                 <tr>
-                <td>Fecha y hora autorización :</td>
+                <td>Fecha autorización :</td>
                 <td> {{ response.transaction_date}}</td>
                 </tr>
                 <tr>
@@ -70,7 +70,7 @@
     <form action="/reembolso.html" method="POST">
         <input type="hidden" name="token_ws" value="{{ token }}">
         <input type="hidden" name="amount" value="{{ response.amount|floatformat }}">
-        <input type="submit" class="btn btn-success" value="Reembolsar Transacci&oacute;n (Anular)">
+        <input type="submit" class="btn btn-success" value="Reembolsar (Anular)">
     </form>
     
 
