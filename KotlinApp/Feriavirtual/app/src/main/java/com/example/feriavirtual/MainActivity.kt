@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         navegador=findViewById(R.id.navegador)
         navegador?.loadUrl("http://192.168.1.13:81/")
-        navegador?.loadUrl("google.com")
+        navegador?.loadUrl("http://192.168.1.15:81/login/")
         navegador?.webChromeClient = object : WebChromeClient(){
         }
         navegador?.webViewClient = object : WebViewClient(){
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     fun cargar(){
         navegador?.clearCache(false)
         navegador?.settings?.javaScriptEnabled=true
-        navegador?.loadUrl("google.com")
+        navegador?.loadUrl("http://192.168.1.15:81/")
     }
 
 

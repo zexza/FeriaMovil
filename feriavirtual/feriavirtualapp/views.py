@@ -595,7 +595,7 @@ def webpay(request):
     cart = Cart(request)
     buy_order = str(1)
     session_id = str(1)
-    return_url = 'http://127.0.0.1:8000/terminarsaldo'
+    return_url = 'http://192.168.1.15:81/terminarsaldo'
     total = 0
     FprecioC = 0
     if request.user.is_authenticated:
@@ -615,23 +615,32 @@ def webpay(request):
 
 def webpaycommit(request):
     cart = Cart(request)
-    if request.user.is_authenticated:
-        for key, value in request.session['cart'].items():
-            quantity = ( value['quantity'])
-            quantity= int(quantity)
-            quantity = ( value['quantity'])
-            id = ( value['product_id'])
-    id=id        
-    quantity = quantity
-    product = Producto.objects.get(id=id)    
-    cantidadactual=product.cantidad     
-    product.cantidad = cantidadactual - quantity
-    product.save()
-    #arreglar
-    cart = Cart(request)
-    token = request.GET.get("token_ws")
-    response = Transaction().commit(token)     
-    return render(request, 'terminarsaldo.html',{"token": token,"response": response})
+    try:
+        if request.user.is_authenticated:
+            for key, value in request.session['cart'].items():
+                quantity = ( value['quantity'])
+                quantity= int(quantity)
+                quantity = ( value['quantity'])
+                id = ( value['product_id'])
+        id=id        
+        quantity = quantity
+        product = Producto.objects.get(id=id)    
+        cantidadactual=product.cantidad     
+        product.cantidad = cantidadactual - quantity
+        product.save()
+        #arreglar
+        cart = Cart(request)
+        token = request.GET.get("token_ws")
+        response = Transaction().commit(token)     
+
+        return render(request, 'terminarsaldo.html',{"token": token,"response": response})
+
+    except TransbankError as e:
+        messages.error(request, f'Error en la transaccion de pago.')
+        error =e.message
+        print(e.message)
+        print(token)
+        return render(request, 'terminar.html', {"error":error})   
     
 
 def webpayplus_reembolso(request):
