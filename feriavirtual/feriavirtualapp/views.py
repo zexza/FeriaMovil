@@ -28,6 +28,11 @@ a=1
 def index(request):
     cart = Cart(request)
     return render(request, 'index.html', {})
+
+
+    
+
+
 def listaContratos(request):
     cart = Cart(request)
     cont = Contrato.objects.all()

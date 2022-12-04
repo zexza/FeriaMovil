@@ -3,4 +3,26 @@
 {% block content %}
 
 
+{% if user.is_active == False %}
+<a >Por favor,</a>
+<a  href="{% url 'login' %}" style="color: #760091;">Ingresar</a>
+<a href="">o</a>
+<a  href="{% url 'register-interno' %}" style="color: #760091;">Registrarse</a>
+
+
+{% else %}
+
+<div>
+    <h3>Bienvenido</h3>
+    <div></div>
+    <b>Para acceder al menu precionar flecha de arriba</b>
+    <div>
+        <a>Si decea cerrar sesion tocar </a>
+        <a href="{% url 'logout' %}" style="color: #ff0000;">Aqui</a>
+    </div>
+    
+</div>
+
+{% endif %}
+
 {% endblock %}
