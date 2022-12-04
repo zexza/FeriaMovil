@@ -195,12 +195,10 @@
 
 
           {% if request.user.rol == "6"%}  <!--admin -->
-          <a class="nav-link" href="http://127.0.0.1:8000/admin/" >Sitio Administracion</a>
           <a class="nav-link" href="{% url 'gestionContratos' %}" > Gestion de contratos</a>
           <a class="nav-link" href="{% url 'register' %}" > Registrar Usuario</a>
           <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
           <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
-          <a class="nav-link" href="#" >Productores</a>
           <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(142, 142, 142); color: #ffffff;" >Cerrar Sesion</a>
           
 
