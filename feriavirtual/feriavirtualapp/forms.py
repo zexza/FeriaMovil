@@ -1,4 +1,3 @@
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from requests import post
@@ -6,7 +5,27 @@ from .models import *
 from django.contrib import admin
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.forms import ModelForm, TextInput, EmailInput
+PRODUCTOS =(
+    ("1", "Cerezas "),
+    ("2", "Uvas"),
+    ("3", "Arándanos "),
+    ("4", "Nueces"),
+    ("5", "Manzana"),
+    ("6", "Ciruela"),
+    ("7", "Peras"),
+    ("9", "Durazno"),
+    ("11", "Frutilla"),
+    ("12", "Granada"),
+    ("13", "Limón"),
+    ("14", "Mandarina"),
+    ("15", "Naranja"),
+    ("16", "Sandia "),
+    ("17", "Melón"),
+    ("18", "Mora"),
+    ("19", "Pera"),
+    ("20", "Manzana"),
+)
 class FormRegistroUsuario(UserCreationForm):
 
     email = forms.EmailField()
@@ -53,7 +72,7 @@ class FormVenta(forms.ModelForm):
         self.fields['cliente'].queryset = User.objects.filter(rol="3")  | User.objects.filter(rol="2")
     class Meta:
         model = Post
-        fields = ('cliente','producto','variedad','calibre','cantidad_necesaria','refrigeracion','contenido', 'imagen',)
+        fields = ('cliente','productoreq','variedad','calibre','cantidad_necesaria','refrigeracion','contenido', 'imagen',)
         labels = {
             'cantidad_necesaria': ('Cantidad en cajas:'),
             'imagen': ('Imagen de referencia (opcional)')
@@ -61,14 +80,17 @@ class FormVenta(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FormVenta, self).__init__(*args, **kwargs)
         self.fields['imagen'].required = False
+        self.fields['cliente'].queryset = User.objects.filter(rol="3")  | User.objects.filter(rol="2")
+        self.fields['productoreq'].choices = PRODUCTOS
 class FormVentaCliente(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ('producto','variedad','calibre','cantidad_necesaria','refrigeracion','contenido', 'imagen',)
+        fields = ('productoreq','variedad','calibre','cantidad_necesaria','refrigeracion','contenido', 'imagen',)
         labels = {
             'cantidad_necesaria': ('Cantidad en cajas:'),
-            'imagen': ('Imagen de referencia (opcional)')
+            'imagen': ('Imagen de referencia (opcional)'),
+            'productoreq': ('Producto requerido')
         }
     def __init__(self, *args, **kwargs):
         super(FormVentaCliente, self).__init__(*args, **kwargs)
@@ -137,3 +159,12 @@ class FormRegistrarTransporte(forms.ModelForm):
     class Meta:
         model = Transporte
         fields = ('tamaño','refrigeracion','tarifa',)
+        
+        
+class FormEstadoSolicitud(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ( 'EstadoSolicitud',)
+        labels = {
+            'EstadoSolicitud': ('Selecciones el estado :'),
+        }

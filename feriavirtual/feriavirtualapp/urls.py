@@ -20,7 +20,7 @@ urlpatterns = [
     path('seguimiento/<int:pk>/', views.seguimiento, name="seguimiento"),
     path('seguimientoLista/', views.seguimientoLista, name='seguimientoLista'),
     path('seguimientoDetalle/<int:pk>/', views.seguimientoDetalle, name='seguimientoDetalle'),
-
+    path('Consulta/', views.Consulta, name='Consulta'),
     
     
     path('ingresar-productos/', views.ingresarproductos, name='ingresar-productos'),

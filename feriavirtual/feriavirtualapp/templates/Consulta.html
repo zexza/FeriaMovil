@@ -1,0 +1,228 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% block content %}
+
+<br>
+
+
+
+
+
+
+<div class="card bg-light">
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="card-body">
+
+
+
+<div class="row">
+    <div class="col-md-3">
+
+
+      
+        <div class="card bg-transparent border-success mb-3" style="max-width: 50rem;">
+            <div class="card-body text-dark">
+              <h5 class="card-title text-dark">Pago neto Productores</h5>
+              <p class="card-text text-dark">$ {{DataframeConsultaSumaProductor}}</p>
+            </div>
+          </div>
+
+
+
+          
+      </div> 
+
+
+      <div class="col-md-3  ">
+        <div class="card bg-transparent border-success mb-3" style="max-width: 50rem;">
+
+            <div class="card-body text-dark">
+              <h5 class="card-title">Suma Tarifa+ productor</h5>
+              <p class="card-text text-dark">$ {{DataframeConsultaSumaProductortarifa}}</p>
+            </div>
+          </div>
+
+        </div> 
+      <div class="col-md-3  ">
+        <div class="card bg-transparent border-success mb-3" style="max-width: 50rem;">
+
+            <div class="card-body text-dark">
+              <h5 class="card-title">Cobro Total Clientes</h5>
+              <p class="card-text text-dark">$ {{Df_grouPostIDPrecioFinalTotal}}</p>
+            </div>
+          </div>
+
+        </div> 
+
+        <div class="col-md-3  ">
+
+            <div class="card bg-transparent border-success mb-3" style="max-width: 50rem;">
+
+                <div class="card-body text-dark" >
+                  <h5 class="card-title">Ganancias Totales</h5>
+                  <p class="card-text text-dark">$ {{Df_grouPostIDGananciaTotal}}</p>
+                </div>
+              </div>
+    
+            </div> 
+        </div>
+    </div> 
+</div>
+
+<br>
+<br>
+<div class="card bg-light">
+    <div class="card-body">
+
+
+  <div class="row">
+
+    <div class="col-md-4">
+
+<!--action="{% url 'Consulta' %}" -->
+
+      <form action="{% url 'Consulta' %}"   class="row row-cols-lg-auto g-3 align-items-center">
+
+      
+        <div class="col-8">
+          <br>        
+          {{form.as_p}}
+        </div>
+        <div class="col-4 ">
+          
+          <input type="submit"  style="background-color:#22d14edb" class="btn btn-primary"></input>
+        </div>
+
+
+
+        <div class="col-8">
+         <br>
+          {{form.as_p}}
+        </div>
+        <div class="col-4">
+          <input type="submit"  style="background-color:#22d14edb" class="btn btn-primary"></input>
+        </div>
+
+      </form>
+    </div>
+
+
+
+
+
+      <div class="col-md-8">
+
+        <!-- Column -->
+        {{ chartGeneral|safe }}
+       </div>
+
+    </div>
+
+
+
+    <br><br>
+
+
+    <br>    
+    <div class="row">
+
+    <div class="col-md-4">
+
+       <!-- Column -->
+       {{ chart|safe }}
+      </div>
+
+
+  <div class="col-md-4">
+
+   <!-- Column -->
+
+   {{ chartP|safe }}
+
+   
+  </div> 
+
+
+<br> 
+
+  <div class="col-md-4">
+
+    <!-- Column -->
+ 
+    {{ chartUsuario|safe }}
+ 
+    
+   </div> 
+  </div>
+
+  </div>
+</div>
+<br><br>
+
+<DIv>DESLIZAR</DIv>
+    <i class="fa-sharp fa-solid fa-arrow-left" style="float:left;"></i>
+    <i class="fa-sharp fa-solid fa-left-right"></i>
+    <i class="fa-sharp fa-solid fa-arrow-right" style="float:right;"></i>
+ 
+<div class="table table-responsive">
+  <table class="table table-striped bg-light table-bordered" style="font-size: 9px">
+    <thead>
+      <tr>
+        <th>EstadoSolicitud</th>
+        <th>cantidad_necesaria</th>
+        <th>fecha_creacion</th>
+        <th>Cantidaddeproductores</th>
+        <th>tarifa</th>
+        <th>PrecioFinalPostProductor</th>
+        <th>PrecioFinaltarifaproductor</th>
+        <th>PrecioFinaltarifaproductorGanancia</th>
+        <th>Ganancia</th>
+        <th>IdPost</th>
+        <th>PostIdCantidad</th>
+      </tr>
+    </thead>
+    <tbody>
+{% for index, row in DataframePost.iterrows %}
+<tr>
+{% for cell in row %}
+  <td>
+    {{cell}}
+  </td>
+{% endfor %}
+</tr>
+{% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+
+        <th>EstadoSolicitud</th>
+        <th>cantidad_necesaria</th>
+        <th>fecha_creacion</th>
+        <th>Cantidaddeproductores</th>
+        <th>tarifa</th>
+        <th>PrecioFinalPostProductor</th>
+        <th>PrecioFinaltarifaproductor</th>
+        <th>PrecioFinaltarifaproductorGanancia</th>
+        <th>Ganancia</th>
+        <th>IdPost</th>
+        <th>PostIdCantidad</th>
+      </tr>
+    </tfoot>
+  </table>
+
+</div>
+</div>
+
+
+{% endblock %}

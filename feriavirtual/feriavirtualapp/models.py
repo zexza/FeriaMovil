@@ -32,19 +32,10 @@ CALIBRE =(
     ("3", "Extra "),
 )
 TAMAÑO =(
-    ("1", "Ligero "),
-    ("2", "Liviano"),
-    ("3", "Semi Liviano"),
-    ("4", "Mediano"),
-    ("5", "Semi esado"),
-    ("6", "Pesado"),
-    ("7", "Extra Pesado"),
-    ("8", "Mega Pesado"),
-    ("9", "Ultra Pesado"),
-    ("10", "Extra Pesado"),
-    ("11", "Giga Pesado"),
-    ("12", "Super Pesado"),
-    )
+    ("1", "Liviano "),
+    ("2", "Mediano"),
+    ("3", "Pesado"),
+)
 EstadoSolicitudCompra =(
     ("1", "Aprobado"),
     ("2", "Rechazado"),
@@ -82,6 +73,7 @@ class User(AbstractUser):
     imagen = models.ImageField(upload_to="Perfil",default='Perfil/default.png')
     direccion=models.CharField(max_length=50, null=True)
     codigopostal=models.IntegerField(default=0, null=True)
+    disponible= models.BooleanField(default=True)
     def __str__(self):
         return f'{self.username}'
     
@@ -99,8 +91,6 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to="Productos", null=True)
     precio = models.IntegerField(default=0)
     Saldo= models.BooleanField(default=False)
-    def __str__(self):
-        return f'{self.autor.username}: {self.producto}: { self.variedad} :  { self.calibre} : { self.cantidad}: { self.fecha_subida}: { self.imagen}: { self.precio}'
 
 
 class Contrato(models.Model):
@@ -114,7 +104,7 @@ class Transporte(models.Model):
     tamaño = models.CharField(max_length=50, choices = TAMAÑO, null=True)
     refrigeracion = models.BooleanField(default=False)
     tarifa = models.IntegerField(default=0)
-    disponible= models.BooleanField(default=True)
+    
     def __str__(self):
         return f'{self.transportista.username}: tamaño: {self.tamaño}: Refrigeracion: {self.refrigeracion}: Tarifa: {self.tarifa}'
 
@@ -122,8 +112,10 @@ class Transporte(models.Model):
 
 class Post(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    producto = models.CharField(max_length=50, choices = PRODUCTOS, null=True)
-    productor = models.ForeignKey(User, on_delete=models.CASCADE,related_name="productor" ,null=True)
+    producto = models.ManyToManyField(Producto,related_name="Postproducto")
+    productoreq = models.CharField(max_length=50,choices=PRODUCTOS, null=True)
+    #productor = models.ManyToManyField(User,related_name="productor" )
+    #productor2 = models.ForeignKey(User, on_delete=models.CASCADE,related_name="productor2" ,null=True)
     variedad = models.CharField(max_length=50, null=True)
     calibre = models.CharField(max_length=50, choices = CALIBRE, null=True,default=1)
     cantidad_actual = models.IntegerField(default=0)
@@ -139,16 +131,14 @@ class Post(models.Model):
     comentariosTransportista = models.TextField(default="")
     class Meta:
         ordering = ['-fecha_creacion']
-    def publish(self):
-        self.fecha_publicacion = timezone.now()
-        self.save()
 
 class Posthistorico(models.Model):
     
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     idpost= models.ForeignKey(Post,on_delete=models.CASCADE,null=True)
-    producto = models.CharField(max_length=50, choices = PRODUCTOS, null=True)
-    productor = models.ForeignKey(User, on_delete=models.CASCADE,related_name="productorh" ,null=True)
+    productoreq = models.CharField(max_length=50,choices=PRODUCTOS, null=True)
+    producto = models.ManyToManyField(Producto,related_name="Postproductoh")
+    #productor = models.ManyToManyField(User,related_name="productorh" )
     variedad = models.CharField(max_length=50, null=True)
     calibre = models.CharField(max_length=50, choices = CALIBRE, null=True,default=1)
     cantidad_actual = models.IntegerField(default=0,null=True)
@@ -163,3 +153,9 @@ class Posthistorico(models.Model):
     transportista = models.ForeignKey(User, on_delete=models.CASCADE, null=True,related_name="transportistah")
     transporte = models.ForeignKey(Transporte, on_delete=models.CASCADE, null=True,related_name="transporteh")
     comentariosTransportista = models.TextField(default="",null=True)   
+
+class Comprobante(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE,related_name="CompUsuario")
+    solicitud = models.ForeignKey(Post, on_delete=models.CASCADE,related_name="CompSolicitud", null=True)
+    fecha = models.DateTimeField(default=timezone.now)
+    monto = models.IntegerField(default=0)
