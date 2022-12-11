@@ -1,5 +1,6 @@
 from ast import Try
 from datetime import datetime
+import operator
 from django.db.models.aggregates import Count
 from django.db.models.expressions import Exists
 from django.shortcuts import render
@@ -16,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 from transbank.webpay.webpay_plus.transaction import Transaction
 from transbank.error.transbank_error import TransbankError
 from django.contrib.auth import login
-from operator import attrgetter
+from operator import attrgetter, itemgetter
 from django.core.mail import send_mail
 from .cart import Cart
 from .context_processor import cart_total_amount
@@ -118,7 +119,7 @@ def seguimiento(request,pk):
     cart = Cart(request)        
     if request.user.is_staff:
         solis = Post.objects.filter(pk=pk)
-    elif request.user.rol =="1" or request.user.rol =="5":
+    elif request.user.rol =="1" or request.user.rol =="5" or request.user.rol =="3" or request.user.rol =="2":
         solis = Post.objects.filter(pk=pk)
     else:
         solis = Post.objects.filter(usuario=request.user,pk=pk)
@@ -143,6 +144,38 @@ def seguimientoLista(request):
         solis = Post.objects.filter(usuario=request.user)
     context = {'solis':solis}
     return render(request, 'seguimientoLista.html',context)
+
+
+
+def comprobante(request,pk):
+    cart = Cart(request)        
+    if request.user.is_staff:
+        solis = Post.objects.filter(pk=pk)
+    elif request.user.rol =="1" or request.user.rol =="5":
+        solis = Post.objects.filter(pk=pk)
+    else:
+        solis = Post.objects.filter(usuario=request.user,pk=pk)
+    context = {'solis':solis}
+    return render(request, 'comprobante.html',context)
+
+def seguimientoComprobante(request):
+    user= request.user
+    cart = Cart(request)
+    if request.user.is_staff:
+        solis = Post.objects.all()
+    elif request.user.rol =="5":
+         solis = Post.objects.all()
+    elif request.user.rol =="1":
+        post = Post.objects.all()
+        for p in post:
+            for prod in p.producto.filter(autor=user):
+                solis = Post.objects.filter(producto=prod)
+    elif request.user.rol =="2" or request.user.rol =="3":
+        solis = Post.objects.filter(cliente=user)
+    else:
+        solis = Post.objects.filter(usuario=request.user)
+    context = {'solis':solis}
+    return render(request, 'seguimientoComprobante.html',context)
 
 
 app = Dash(__name__)
@@ -189,22 +222,11 @@ def ingresarproductos(request):
     context = { 'form': form }
     return render(request, 'ingresar-productos.html',context)
 
-DATABASES = {
-'default': {
-'ENGINE': "sql_server.pyodbc",
-'HOST': "186.78.38.134\DESKTOP-A7GEGG2\SQL2019TAB,14334",
-'USER': "sa",
-'PASSWORD': "Pvsa**2021",
-'NAME': "sqlite6",
-'OPTIONS': {"driver": "ODBC Driver 17 for SQL Server", 
-'host_is_server': True
-},
-}
-}
+
 
 
 def connection(request):
-    s = '186.78.38.134\DESKTOP-A7GEGG2\SQL2019TAB,14334' #Your server name 
+    s = '186.78.35.242\DESKTOP-A7GEGG2\SQL2019TAB,14334' #Your server name 
     d = 'sqlite6' #name bd  
     u = 'sa' #Your login
     p = 'Pvsa**2021' #Your login password
@@ -228,7 +250,7 @@ def Consulta(request):
 
     #Fecha_json = json.dumps([P.fecha_creacion for P in PostObj], cls=DTEncoder)
     #Usuario_json = json.dumps([P.usuario for P in PostObj])
-    select=('SELECT        dbo.feriavirtualapp_post.id, dbo.feriavirtualapp_producto.precio, dbo.feriavirtualapp_producto.autor_id, dbo.feriavirtualapp_post_producto.post_id, dbo.feriavirtualapp_post.EstadoSolicitud,  dbo.feriavirtualapp_post.cantidad_necesaria, dbo.feriavirtualapp_post.transporte_id, dbo.feriavirtualapp_post.fecha_creacion FROM            dbo.feriavirtualapp_post INNER JOIN dbo.feriavirtualapp_post_producto ON dbo.feriavirtualapp_post.id = dbo.feriavirtualapp_post_producto.post_id INNER JOIN dbo.feriavirtualapp_producto ON dbo.feriavirtualapp_post_producto.producto_id = dbo.feriavirtualapp_producto.id')    
+    select=('SELECT        dbo.feriavirtualapp_post.id, dbo.feriavirtualapp_post.cantidad_necesaria, dbo.feriavirtualapp_post.fecha_creacion, dbo.feriavirtualapp_post.EstadoSolicitud, dbo.feriavirtualapp_post_productos.cantidad_pujada,  dbo.feriavirtualapp_post_productos.post_id, dbo.feriavirtualapp_post_productos.producto_id, dbo.feriavirtualapp_producto.id AS Expr1, dbo.feriavirtualapp_producto.producto, dbo.feriavirtualapp_producto.precio,  dbo.feriavirtualapp_producto.autor_id, dbo.feriavirtualapp_post.transporte_id FROM            dbo.feriavirtualapp_post INNER JOIN dbo.feriavirtualapp_post_productos ON dbo.feriavirtualapp_post.id = dbo.feriavirtualapp_post_productos.post_id INNER JOIN dbo.feriavirtualapp_producto ON dbo.feriavirtualapp_post_productos.producto_id = dbo.feriavirtualapp_producto.id')    
     conn = connection(request)
     df_merge_dataframe = pd.read_sql(select, conn)
     post = Post.objects.all()
@@ -239,8 +261,7 @@ def Consulta(request):
     #Fecha_json = json.dumps([P.fecha_creacion for P in PostObj], cls=DTEncoder)
     #Usuario_json = json.dumps([P.usuario for P in PostObj])
     
-    df_user_cliente = pd.DataFrame.from_records(list(User.objects.all().values('id','username')),)
-    df_trasporte = pd.DataFrame.from_records(list(Transporte.objects.all().values('id','tarifa')),)
+
     
 
         
@@ -270,6 +291,8 @@ def Consulta(request):
 
 
     #join User 
+    df_user_cliente = pd.DataFrame.from_records(list(User.objects.all().values('id','username')),)
+    
     df_merge_dataframe = pd.merge(df_user_cliente, df_merge_dataframe, left_on='id', right_on='autor_id')
     df_merge_dataframe.rename(columns = {'username':'NombreProductor',},  inplace = True)  
     df_merge_dataframe.drop('id_x', inplace=True, axis=1)
@@ -277,13 +300,11 @@ def Consulta(request):
     df_merge_dataframe=df_merge_dataframe.sort_values(by=['post_id'])
 
     
-    dfGroupbyPostIdCount = df_merge_dataframe.groupby(['post_id'])['post_id'].count()
-    dfGroupbyPostIdCount= pd.DataFrame(dfGroupbyPostIdCount)
-    dfGroupbyPostIdCount.rename(columns = {'post_id':'Cantidaddeproductores', }, inplace = True) 
+
     
-    df_merge_dataframe = pd.merge(df_merge_dataframe, dfGroupbyPostIdCount, left_on='post_id', right_on='post_id')
+
     
-    PrecioFinalProductor=df_merge_dataframe['precio'] * df_merge_dataframe['cantidad_necesaria']/df_merge_dataframe['Cantidaddeproductores']
+    PrecioFinalProductor=df_merge_dataframe['precio'] * df_merge_dataframe['cantidad_pujada']
     df_merge_dataframe.insert(2, "PrecioFinalProductor", PrecioFinalProductor, True)
     
     
@@ -293,9 +314,9 @@ def Consulta(request):
     dfGroupbyPostIdCount= pd.DataFrame(df_total_neto_post)
 
 
-    
-    #Join trasporte
- 
+
+    #Join trasporte-
+    df_trasporte = pd.DataFrame.from_records(list(Transporte.objects.all().values('id','tarifa')),)
     df_merge_dataframe_trasporte = pd.merge(df_merge_dataframe, df_trasporte, left_on='transporte_id', right_on='id')
     df_merge_dataframe_trasporte=df_merge_dataframe_trasporte.sort_values(by=['post_id'])
 
@@ -317,7 +338,7 @@ def Consulta(request):
   
 
 
-
+    print(df_merge_dataframe_trasporte)
 
   
 
@@ -325,7 +346,7 @@ def Consulta(request):
 
 
     DataframePost= pd.DataFrame(    df_merge_dataframe_trasporte.groupby(['EstadoSolicitud', 'cantidad_necesaria', 
-       'fecha_creacion', 'Cantidaddeproductores', 'tarifa',
+       'fecha_creacion', 'tarifa',
        'PrecioFinalPostProductor', 'PrecioFinaltarifaproductor',
        'PrecioFinaltarifaproductorGanancia', 'Ganancia','IdPost'])['post_id'].size())
     
@@ -334,7 +355,6 @@ def Consulta(request):
     DataframePost= pd.DataFrame(  DataframePost.reset_index() )
        
     DataframePost=DataframePost.sort_values(by=['IdPost'])
-    print(DataframePost)
     Df_grouPostIDPrecioFinalTotal = DataframePost['PrecioFinaltarifaproductorGanancia'].sum()
     Df_grouPostIDPrecioFinalTotal= str('{:,.0f}'.format(Df_grouPostIDPrecioFinalTotal).replace(",", "@").replace(".", ",").replace("@", "."))
     
@@ -491,10 +511,12 @@ def pagar(request,total,pk):
     return_url = 'http://127.0.0.1:8000/terminar/'+str(pk)+'/'
 
     amount = total
+    total= str('{:,.0f}'.format(total).replace(",", "@").replace(".", ",").replace("@", "."))
     try:
         response = Transaction().create(buy_order, session_id, amount, return_url)
         context ={'total':total,"response":response}
         print(amount)
+        
         return render(request, 'pagar.html', context) 
     except TransbankError as e:
         print(e.message)
@@ -526,8 +548,12 @@ def terminar(request,pk):
         #================PRODUCTORES==========================
         cantidadprods = len(soli.producto.all())
         cantidaddivida = soli.cantidad_actual//cantidadprods
+        
         for p in soli.producto.all():
-            comProd = Comprobante(usuario=p.autor,solicitud = soli,monto=p.precio * cantidaddivida)
+
+            postP = Post_productos.objects.get(producto=p, post=soli)
+
+            comProd = Comprobante(usuario=p.autor,solicitud = soli,monto=p.precio * postP.cantidad_pujada)
             comProd.save()
             print(comProd)
         #================TRANSPORTISTA========================
@@ -643,6 +669,7 @@ def modificarSolicitud (request, pk):
             if estadoactual == "1":
                 topProductos = []
                 topProductos1 = []
+                topcaso3 = []
                 for productor in topProductoresCProductos:
                     try:
                         producto1 = Producto.objects.get(autor=productor,variedad=variedadnecesaria, producto=productonecesario, calibre=calibrenecesario,Saldo=False)
@@ -652,84 +679,138 @@ def modificarSolicitud (request, pk):
                 for prodidoneo in topProductos:                    
                     if prodidoneo.cantidad >= cantidadnecesaria:
                         topProductos1.append(prodidoneo)                        
-                    else:
-                        #Caso 3Cuando un productor cumple los requisitos pero no tiene la cantidad necesaria, pero hay más productores que cumplen los requisitos y pueden completar la cantidad necesaria con un precio un poco más elevado
-                        print("Este productor no tiene la cantidad necesaria.")
+                    else: 
+                        topcaso3.append(prodidoneo)
                 try:
                     min_precio = min(topProductos1, key=attrgetter('precio'))
                     min_precio = min_precio.precio
                 except:
                     print("No hay ningun productor para calcular el precio minimo ")
-                
-                if any(topProductos1):                
-                    print(len(topProductos1))
-                    if len(topProductos1) == 1:
-                        for ganador in topProductos1:
-                            if ganador.precio == min_precio:
-                                productoganador = ganador     
 
-                                #posiblidad de bloque pl sql, cuando el producto llege a 0,borrar la fila completa del producto
-                                productoganador.cantidad = productoganador.cantidad - cantidadnecesaria
-                                productoganador.save()
-                                #cantidad actual ya n       o seria necesaria
-                                SolicitudPK.cantidad_actual = cantidadnecesaria
-                                SolicitudPK.EstadoSolicitud = "4"
-                                SolicitudPK.producto.add(productoganador) 
-                                SolicitudPK.save()
+                if not SolicitudPK.producto.exists():
+
+                    if any(topProductos1):                
+                        print(len(topProductos1))
+                        if len(topProductos1) == 1:
+                            for ganador in topProductos1:
+                                if ganador.precio == min_precio:
+                                    productoganador = ganador     
+
+                                    #posiblidad de bloque pl sql, cuando el producto llege a 0,borrar la fila completa del producto
+                                    productoganador.cantidad = productoganador.cantidad - cantidadnecesaria
+                                    productoganador.save()
+                                    #cantidad actual ya n       o seria necesaria
+                                    SolicitudPK.cantidad_actual = cantidadnecesaria
+                                    SolicitudPK.EstadoSolicitud = "4"
+                                    SolicitudPK.producto.add(productoganador) 
+                                    SolicitudPK.save()
+                                    
+                                    #ENVIAR CORREO AL PRODUCTOR PARA QUE LLEVE SUS PRODUCTOS A BODEGA
+                                    pcorreo= productoganador.autor.email
+                                    '''
+                                    send_mail(
+                                        'PRODUCTOR!lleva tus productos a bodega central!',
+                                        'Tus productos ganaron la subasta, el siguiente paso es llevarlos a bodega central',
+                                        'maipo_grande@gmail.com',
+                                        [pcorreo],
+                                        fail_silently=False,
+                                    )
+                                    '''
+                            messages.success(request, f'Se ha notificado al productor para que lleve sus productos a bodega')        
+
+                        #Si hay mas de un productor que califica en calibre,cantidad 
+                        elif len(topProductos1) >= 2:
+                            print(topProductos1)
+                            #Se seleccionan los dos primeros (Top 2)
+                            for ganador in topProductos1[:2]:
+                                #si tienen el mismo precio(el minimo)
+                                if ganador.precio == min_precio:
+                                    productoganador = ganador     
+                                    #Se divide la cantidad en dos
+                                    cantidaddividida= cantidadnecesaria//2
+                                    productoganador.cantidad = productoganador.cantidad - cantidaddividida
+                                    productoganador.save()
+                                    print(productoganador.cantidad)
+                                    #se actualiza la solicitud a subasta de transporte y la cantidad actual se llena
+                                    #SolicitudPK.cantidad_actual = SolicitudPK.cantidad_actual+cantidaddividida
+                                    SolicitudPK.cantidad_actual = cantidadnecesaria
+                                    SolicitudPK.EstadoSolicitud = "4"
+                                    #productores ganadores ya no estan disponibles
+                                    productoganador.autor.disponible=False
+                                    #Debe ser un arreglo de productores(pueden ser mas de un productor ganador)
+                                    SolicitudPK.producto.add(productoganador)
+
+
+                                    #ENVIAR CORREO AL PRODUCTOR PARA QUE LLEVE SUS PRODUCTOS A BODEGA
+                                    '''
+                                    pcorreo= productoganador.autor.email
+                                    send_mail(
+                                        'PRODUCTOR!lleva tus productos a bodega central!',
+                                        'Tus productos ganaron la subasta, el siguiente paso es llevarlos a bodega central',
+                                        'maipo_grande@gmail.com',
+                                        [pcorreo],
+                                        fail_silently=False,
+                                    )
+                                    '''
+                                else:
+                                    print(str(ganador)+' No tiene el precio minimo para participar en la subasta')
+                            SolicitudPK.save()        
+                            messages.success(request, f'Se ha notificado a los productores para que lleven sus productos a bodega')
+                    else:
+                        topcaso3.sort(key = operator.attrgetter('cantidad'),reverse=True)
+                        if any(topcaso3):
+                            cntsumada = 0
+                            prodpuja= []
+                            cntprod=[]
+                            for prod in topcaso3:
+                                if cntsumada <= cantidadnecesaria:
+                                    cntsumada=cntsumada+prod.cantidad
+                                    print('cantidad prod: '+str(prod.cantidad))
+                                    print('cantidad sumanda: '+str(cntsumada))
+                                    prodpuja.append(prod)
+                                    cntprod.append(prod.cantidad)
+
+                            if cntsumada >= cantidadnecesaria:
+                                diffultimo = cntsumada-cantidadnecesaria
+                                for p in prodpuja:
+                                    if p==prodpuja[-1]:
+                                        SolicitudPK.producto.add(p, through_defaults={'cantidad_pujada':p.cantidad-diffultimo })
+                                        
+                                    else:
+                                        SolicitudPK.producto.add(p, through_defaults={'cantidad_pujada':p.cantidad })
+                                        
+                                    SolicitudPK.cantidad_actual = cantidadnecesaria
+                                    SolicitudPK.EstadoSolicitud = "4"
+                                    SolicitudPK.save()
+
+                                    p.cantidad = p.cantidad-p.cantidad                        
+                                    p.save()
+
+                                    #ENVIAR CORREO AL PRODUCTOR PARA QUE LLEVE SUS PRODUCTOS A BODEGA
+                                    '''
+                                    pcorreo= p.autor.email
+                                    
+                                    send_mail(
+                                        'PRODUCTOR!lleva tus productos a bodega central!',
+                                        'Tus productos ganaron la subasta, el siguiente paso es llevarlos a bodega central',
+                                        'maipo_grande@gmail.com',
+                                        [pcorreo],
+                                        fail_silently=False,
+                                    )
+                                    '''
+                                diffultimo = cntsumada-cantidadnecesaria
                                 
-                                #ENVIAR CORREO AL PRODUCTOR PARA QUE LLEVE SUS PRODUCTOS A BODEGA
-                                pcorreo= productoganador.autor.email
-                                '''
-                                send_mail(
-                                    'PRODUCTOR!lleva tus productos a bodega central!',
-                                    'Tus productos ganaron la subasta, el siguiente paso es llevarlos a bodega central',
-                                    'maipo_grande@gmail.com',
-                                    [pcorreo],
-                                    fail_silently=False,
-                                )
-                                '''
-                        messages.success(request, f'Se ha notificado al productor para que lleve sus productos a bodega')        
+                                prodpuja[-1].cantidad = prodpuja[-1].cantidad + diffultimo
+                                prodpuja[-1].save() 
 
-
-                    #Si hay mas de un productor que califica en calibre,cantidad 
-                    elif len(topProductos1) >= 2:
-                        print(topProductos1)
-                        #Se seleccionan los dos primeros (Top 2)
-                        for ganador in topProductos1[:2]:
-                            #si tienen el mismo precio(el minimo)
-                            if ganador.precio == min_precio:
-                                productoganador = ganador     
-                                #Se divide la cantidad en dos
-                                cantidaddividida= cantidadnecesaria//2
-                                productoganador.cantidad = productoganador.cantidad - cantidaddividida
-                                productoganador.save()
-                                print(productoganador.cantidad)
-                                #se actualiza la solicitud a subasta de transporte y la cantidad actual se llena
-                                #SolicitudPK.cantidad_actual = SolicitudPK.cantidad_actual+cantidaddividida
-                                SolicitudPK.cantidad_actual = cantidadnecesaria
-                                SolicitudPK.EstadoSolicitud = "4"
-                                #productores ganadores ya no estan disponibles
-                                productoganador.autor.disponible=False
-                                #Debe ser un arreglo de productores(pueden ser mas de un productor ganador)
-                                SolicitudPK.producto.add(productoganador)
-
-
-                                #ENVIAR CORREO AL PRODUCTOR PARA QUE LLEVE SUS PRODUCTOS A BODEGA
-                                '''
-                                pcorreo= productoganador.autor.email
-                                send_mail(
-                                    'PRODUCTOR!lleva tus productos a bodega central!',
-                                    'Tus productos ganaron la subasta, el siguiente paso es llevarlos a bodega central',
-                                    'maipo_grande@gmail.com',
-                                    [pcorreo],
-                                    fail_silently=False,
-                                )
-                                '''
+                                
+                                messages.success(request, f'Se ha notificado al productor para que lleve sus productos a bodega')    
+                                print(SolicitudPK.producto.all())   
                             else:
-                                print(str(ganador)+' No tiene el precio minimo para participar en la subasta')
-                        SolicitudPK.save()        
-                        messages.success(request, f'Se ha notificado a los productores para que lleven sus productos a bodega')
+                                SolicitudPK.EstadoSolicitud= '3'
+                                messages.error(request, f'No hay productos suficientes para satisfacer el pedido.')
 
+                if SolicitudPK.producto.exists():
                     #SUBASTA DE TRANSPORTE
                     '''==TABLA DE TAMAÑOS TRANSPORTISTA==
                     TAMAÑO =(
@@ -742,11 +823,11 @@ def modificarSolicitud (request, pk):
                     Cajas= 32
                     pallets=SolicitudPK.cantidad_necesaria//Cajas
                     
-                    if pallets >= 192 and pallets <=384:
+                    if pallets >= 0 and pallets <=12:
                         tamañonecesario= '1'
-                    elif pallets >=385 and pallets <=768:
+                    elif pallets >=12 and pallets <=32:
                         tamañonecesario= '2'
-                    elif pallets > 768:
+                    elif pallets > 32:
                         tamañonecesario = '3'
 
                     transportes=[]
@@ -784,17 +865,9 @@ def modificarSolicitud (request, pk):
                         tganador.transportista.save()
                         SolicitudPK.save()
                         messages.success(request, f'Se ha escogido un transportista adecuado para el envio.')
-                    elif len(transportes) >= 2:
-                        
-                        print("Hay dos transportistas")
                     elif len(transportes) == 0:
                         print("No hay transportistas disponibles en este momento")
                         messages.error(request, f'No hay transportistas que cumplan los requisitos en este momento, vuelve a intentarlo mas tarde.')
-
-                else:
-                    SolicitudPK.EstadoSolicitud = '3' 
-                    messages.error(request, f'No hay productores que puedan participar en la subasta en este momento, vuelve a intentarlo mas tarde.')
-
 
             '''Solicitud Pendiente'''
             if estadoactual == "3":
@@ -945,6 +1018,7 @@ def add_product_catalogo(request, product_id):
     cart = Cart(request)
     product = Producto.objects.get(id=product_id)
     cart.add(product=product)
+    messages.success(request, f'{product.get_producto_display()} agregado al carrito')
     return redirect("/Venta-local")
 
 
@@ -1006,23 +1080,19 @@ def webpay(request):
 
 def webpaycommit(request):
     cart = Cart(request)
-    if request.user.is_authenticated:
-        for key, value in request.session['cart'].items():
-            quantity = ( value['quantity'])
-            quantity= int(quantity)
-            quantity = ( value['quantity'])
-            id = ( value['product_id'])
-    id=id        
-    quantity = quantity
-    product = Producto.objects.get(id=id)    
-    cantidadactual=product.cantidad     
-    product.cantidad = cantidadactual - quantity
-    product.save()
-    #arreglar
-    cart = Cart(request)
+    productos=[]
+    for key,value in request.session['cart'].items():
+        cantidad = int( value['quantity'])
+        id = ( value['product_id'])  
+        product = Producto.objects.get(pk=id) 
+        product.cantidad= product.cantidad-cantidad
+        productos.append(product)
+
     token = request.GET.get("token_ws")
-    response = Transaction().commit(token)     
-    return render(request, 'terminarsaldo.html',{"token": token,"response": response})
+    response = Transaction().commit(token)  
+    response['transaction_date'] = datetime.strptime(response['transaction_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    return render(request, 'terminarsaldo.html',{"token": token,"response": response, "productos":productos,"cantidad":cantidad})
     
 
 def webpayplus_reembolso(request):

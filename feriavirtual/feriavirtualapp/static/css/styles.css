@@ -6,6 +6,8 @@
 
 }
 
+
+
 td,
   th {
     vertical-align: middle;
@@ -19,7 +21,7 @@ td,
     margin: 50px 0;
 }
 #content{
-    background-image: url(../../../media/Fondos/fondo.png);
+    background-color:rgb(163 255 163) !important;
 }
 
 
@@ -103,6 +105,13 @@ input[type='submit']{
 }
 input:hover{
     cursor: pointer;
+}
+
+.navbar-toggler{
+
+    color: rgb(255 0 0); 
+    border-color: rgb(255 0 0);
+
 }
 nav a{
     font-weight: bold;

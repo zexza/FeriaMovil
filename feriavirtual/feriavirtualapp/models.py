@@ -91,7 +91,8 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to="Productos", null=True)
     precio = models.IntegerField(default=0)
     Saldo= models.BooleanField(default=False)
-
+    class Meta:
+        ordering = ['-cantidad']
 
 class Contrato(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -112,7 +113,7 @@ class Transporte(models.Model):
 
 class Post(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
-    producto = models.ManyToManyField(Producto,related_name="Postproducto")
+    producto = models.ManyToManyField(Producto, through='Post_productos',related_name="Postproducto")
     productoreq = models.CharField(max_length=50,choices=PRODUCTOS, null=True)
     #productor = models.ManyToManyField(User,related_name="productor" )
     #productor2 = models.ForeignKey(User, on_delete=models.CASCADE,related_name="productor2" ,null=True)
@@ -153,6 +154,11 @@ class Posthistorico(models.Model):
     transportista = models.ForeignKey(User, on_delete=models.CASCADE, null=True,related_name="transportistah")
     transporte = models.ForeignKey(Transporte, on_delete=models.CASCADE, null=True,related_name="transporteh")
     comentariosTransportista = models.TextField(default="",null=True)   
+
+class Post_productos(models.Model):
+    producto = models.ForeignKey(Producto,on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    cantidad_pujada = models.IntegerField(default=0)
 
 class Comprobante(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE,related_name="CompUsuario")

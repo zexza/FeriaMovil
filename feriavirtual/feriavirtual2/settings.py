@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'feriavirtual2.wsgi.application'
 DATABASES = {
 'default': {
 'ENGINE': "sql_server.pyodbc",
-'HOST': "186.78.38.134\DESKTOP-A7GEGG2\SQL2019TAB,14334",
+'HOST': "186.78.35.242\DESKTOP-A7GEGG2\SQL2019TAB,14334",
 'USER': "sa",
 'PASSWORD': "Pvsa**2021",
 'NAME': "sqlite6",

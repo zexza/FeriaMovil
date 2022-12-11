@@ -9,16 +9,12 @@
 {% else %}
 <br>
 <br>
-<DIv>DESLIZAR</DIv>
-    <i class="fa-sharp fa-solid fa-arrow-left" style="float:left;"></i>
-    <i class="fa-sharp fa-solid fa-left-right"></i>
-    <i class="fa-sharp fa-solid fa-arrow-right" style="float:right;"></i>
 <div class="card">
     <div class="card-body">
       <div class="table-responsive">
         <table
           id="zero_config"
-          class="table table-striped table-bordered" style="font-size: 12px">
+          class="table table-striped table-bordered">
          
           <thead>
             <tr>
@@ -34,7 +30,7 @@
                 <td>{{ s.id }}</td>
                 <td>{{ s.get_EstadoSolicitud_display }}</td>
                 <td>{{ s.fecha_creacion|date:"d/m/Y" }}</td>
-                <td><a href="{% url 'seguimiento' s.pk%}" class="fa fa-search"></a></td>
+                <td><p class="boton_mod rounded "><a  href="{% url 'seguimiento' s.pk%}"><iconify-icon icon="ic:baseline-search"></iconify-icon></a></p></td>
 
             </tr>
         {% endfor %}

@@ -21,7 +21,8 @@ urlpatterns = [
     path('seguimientoLista/', views.seguimientoLista, name='seguimientoLista'),
     path('seguimientoDetalle/<int:pk>/', views.seguimientoDetalle, name='seguimientoDetalle'),
     path('Consulta/', views.Consulta, name='Consulta'),
-    
+    path('comprobante/<int:pk>/', views.comprobante, name='comprobante'),
+    path('seguimientoComprobante/', views.seguimientoComprobante, name='seguimientoComprobante'),
     
     path('ingresar-productos/', views.ingresarproductos, name='ingresar-productos'),
     path('mis-productos/', views.misproductos, name='mis-productos'),

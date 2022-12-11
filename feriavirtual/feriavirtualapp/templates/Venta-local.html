@@ -9,28 +9,39 @@
         <!-- Section-->
         
 
-        <a  class="fas fa-shopping-cart" href="/carrito.html" style="color: rgb(0, 255,0); right: 20px; position: absolute; margin-top: 10px;"></a>
-        
-            
 
-
+        <a  class="" href="/carrito.html" style=" right: 20px; position: absolute; margin-top: 10px; "    >
+            <img src="https://cdn-icons-png.flaticon.com/512/5087/5087847.png" alt="" width="30" height="30">
+            {% if request.session.cart.items %}
+            {% for key, value in request.session.cart.items %}
+                 <tr class="text-center">                     
+                     {{ value.quantity }}                             
+                 </tr>
+            {% endfor %}
+            {% endif %}
         
+        
+        </a>
+        
+        
+
 
         <section class="py-5">
             <div class="container px-4 px-lg-5 mt-5">
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                <div class="row gx-4 gx-lg-5  row-cols-xs-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     {% for product in products %}
                     <div class="col mb-5">
                         <div class="card h-100">
                             <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Venta local</div>
                             <!-- Product image-->
                             <img class="card-img-top" src="{{ product.imagen.url }}" alt="..." />
                             <!-- Product details-->
                             <div class="card-body p-4">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <h5 class="fw-bolder">Special Item</h5>
+                                    <h5 class="fw-bolder">{{product.get_producto_display}}</h5>
+                                    <h6 class="fw-bolder">{{product.variedad}}</h6>
                                     <!-- Product reviews-->
                                     <div class="d-flex justify-content-center small text-warning mb-2">
                                         <div class="bi-star-fill"></div>
@@ -40,8 +51,7 @@
                                         <div class="bi-star-fill"></div>
                                     </div>
                                     <!-- Product price-->
-                                    <span class="text-muted text-decoration-line-through">$20.00</span>
-                                    $18.00
+                                    <span class="text-muted text-decoration-line-through">$ {{product.precio}}</span>
                                 </div>
                             </div>
                             <!-- Product actions-->
@@ -71,3 +81,6 @@
     </body>
     {% endif  %} 
 {% endblock %}
+
+
+

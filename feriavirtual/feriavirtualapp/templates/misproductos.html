@@ -1,49 +1,49 @@
 {% extends 'baseboostrap.html' %}
 {% load humanize %}
 {% block content %}
+<br>
+<iconify-icon icon="ic:round-rotate-90-degrees-ccw"></iconify-icon>
+  <div>Voltear si es necesario  </div>
 
-
-<article>
+<div class="main">
     <DIv>DESLIZAR</DIv>
         <i class="fa-sharp fa-solid fa-arrow-left" style="float:left;"></i>
         <i class="fa-sharp fa-solid fa-left-right"></i>
         <i class="fa-sharp fa-solid fa-arrow-right" style="float:right;"></i>
-    <div class="row center-xs ">
 
-        <div class="usuario">
-            <h2 class="username">{{ request.user.username }}</h2>           
-        </div>
-        <Div class="table-responsive">
-            <table class="table table-light table-striped">
-                <tr class="table-active">
+<div class="card">
+    <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-light table-striped">
+        <tr class="table-active">
+                <tr>
+                    <th>Tipo fruta</th>    
+                    <th>Variedad</th>       
+                    <th>Cantidad (Cajas)</th>
+                    <th>Calibre</th>       
+                    <th>Precio caja</th> 
+                    <th>Fecha de subida</th>   
                     
-
-                        <th>Producto</th>    
-                        <th>Variedad</th>       
-                        <th>Cantidad (Cajas)</th>
-                        <th>Precio por caja($)</th> 
-                        <th>Fecha de subida</th>   
-                        
-                        <th>Imagen</th>  
-                        <th>Modificar</th>  
-                        <th>Eliminar</th>
-        
-                    {% for p in prod %} 
-                    <tr>
-                        <td>{{ p.get_producto_display }}</td>
-                        <td>{{ p.variedad }}</td>
-                        <td>{{ p.cantidad }}</td>
-                        <td>{{ p.precio }} </td>
-                        <td><i class="clock"></i><time data-time="#">{{ p.fecha_subida }}</time></td>
-                        <td> <img  src="{{ p.imagen.url }}"> </td>
-                        <td> <button>Modificar</button> </td>
-                        <td> <button>Eliminar</button> </td>
-                    </tr>
+                    <th>Imagen</th>  
+                    <th>Modificar</th>  
+                    <th>Eliminar</th>  
+                </tr>
+                {% for p in prod %} 
+                <tr>
+                    <td>{{ p.get_producto_display }}</td>
+                    <td>{{ p.variedad }}</td>
+                    <td>{{ p.cantidad }}</td>
+                    <td>{{ p.get_calibre_display }}</td>
+                    <td>${{ p.precio }} </td>
+                    <td><i class="clock"></i><time data-time="#">{{ p.fecha_subida |date:"d/m/Y"}}</time></td>
+                    <td> <img style="height: 100px;" src="{{ p.imagen.url }}"> </td>
+                    <td><a class="btn btn-success "><iconify-icon icon="uiw:setting"></iconify-icon></a></td>
+                    <td><a class="btn btn-danger "><iconify-icon icon="mdi:trash-can"></iconify-icon></a></td>
+                </tr>
                 {% endfor %}
-            </table>
-
-        </Div>
-
-    </div>
-</article>
+              </table>
+            </div>
+        </div> </div>
+        
+        </div>
 {% endblock %}

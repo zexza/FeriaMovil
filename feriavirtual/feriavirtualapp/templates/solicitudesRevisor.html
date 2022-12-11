@@ -2,11 +2,21 @@
 {% load humanize %}
 {% block content %}
 
+
+
+<br>
+<iconify-icon icon="ic:round-rotate-90-degrees-ccw"></iconify-icon>
+  <div>Voltear si es necesario  </div>
+
 <div class="main">
   <DIv>DESLIZAR</DIv>
     <i class="fa-sharp fa-solid fa-arrow-left" style="float:left;"></i>
     <i class="fa-sharp fa-solid fa-left-right"></i>
     <i class="fa-sharp fa-solid fa-arrow-right" style="float:right;"></i>
+
+
+<div class="card">
+  <div class="card-body">
   <div class="table-responsive">
     <table class="table table-light table-striped">
       <tr class="table-active">
@@ -15,17 +25,17 @@
           <td><b>Producto</b></td>
           <td><b>Variedad</b></td>
           <td><b>Calibre</b></td>
-          <td><b>Cantidad_actual</b></td>
-          <td><b>Cantidad_necesaria</b></td>
+          <td><b>Cant Actual</b></td>
+          <td><b>Cant Necesaria</b></td>
           <td><b>Contenido</b></td>
           <td><b>Cliente</b></td>
-          <td><b>Fecha_creacion</b></td>
+          <td><b>Fecha Inicio</b></td>
           <td><b>Direccion</b></td>
           <td><b>Codigo Postal</b></td>
-          <td><b>Estado Solicitud Compra</b></td>
+          <td><b>Estado Solicitud</b></td>
           
           <td><b>Imagen</b></td>
-          <td><b>ModEstado</b></td>
+          <td><b>Mod Estado</b></td>
 
         {% for s in solir %} 
         <tr>
@@ -60,13 +70,13 @@
             {% else %}
             <td><b></b></td>
             {% endif %}
-            <td><p class="boton_mod"><a  href="{% url 'modificarSolicitudRevisor' s.pk%}"  style="background-color:#71da8cdb; color: black;">Actualizar estado</a></p></td>
+            <td><p class="boton_mod"><a  href="{% url 'modificarSolicitudRevisor' s.pk%}"><iconify-icon icon="uiw:setting"></iconify-icon></a></p></td>
           </tr>
         {% endfor %}
       </table>
     </div>
-
-
+  </div>
+  </div>
 </div>
 
 

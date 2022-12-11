@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
 
     private var navegador:WebView?=null
     private var ulrFeria = "http://192.168.1.15:81/"
-
+    private var urlRestar = "http://192.168.1.15:81/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.nav_menu,menu)
         return super.onCreateOptionsMenu(menu)
@@ -84,13 +86,36 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-
+            R.id.id_info -> moreInfo()
             R.id.id_back -> backButton2()
+            R.id.id_restart2 -> recargar()
             R.id.id_restart -> cargar()
         }
         return super.onOptionsItemSelected(item)
     }
 
+
+    fun moreInfo(){
+        cargaView = false
+
+        navegador?.clearCache(false)
+        navegador?.settings?.javaScriptEnabled=true
+        navegador?.loadUrl("https://drive.google.com/drive/folders/1YmE9M90BfGtPuC2hsz3wREhQa3-v8tQw?usp=share_link")
+
+
+    }
+    fun recargar(){
+        cargaView = false
+
+
+        urlRestar = navegador?.url.toString()
+        navegador?.clearCache(false)
+        navegador?.settings?.javaScriptEnabled=true
+        navegador?.loadUrl(urlRestar)
+
+
+
+    }
 
     fun cargar(){
         cargaView = false
