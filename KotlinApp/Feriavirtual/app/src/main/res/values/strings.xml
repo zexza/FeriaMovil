@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Feria virtual</string>
     <string name="reconectar">Reconectar</string>
+    <string name="no_soy_un_bot">No soy un bot</string>
 
 
 </resources>

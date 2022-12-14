@@ -5,19 +5,8 @@
 
 {% if request.user.rol == "4" or request.user.rol == "7"  %}
 
-{% elif request.user.rol == "1" %}
 
-<a>Lo sentimos, por ahora no existe una vista para productor</a>
-{% elif request.user.rol == "3" %}
-
-<a>Lo sentimos, por ahora no existe una vista para Cliente local</a>
-{% elif request.user.rol == "2" %}
-
-<a>Lo sentimos, por ahora no existe una vista para Cliente Externo</a>
 {% else %}
-
-
-
 <br>
 <br>
 <div class="card">
@@ -25,7 +14,7 @@
       <div class="table-responsive">
         <table
           id="zero_config"
-          class="table table-striped table-bordered">
+          class="table table-striped table-bordered" style="font-size: 12px">
          
           <thead>
             <tr>
@@ -41,7 +30,20 @@
                 <td>{{ s.id }}</td>
                 <td>{{ s.get_EstadoSolicitud_display }}</td>
                 <td>{{ s.fecha_creacion|date:"d/m/Y" }}</td>
-                <td><p class="boton_mod rounded "><a  href="{% url 'seguimiento' s.pk%}"><iconify-icon icon="ic:baseline-search"></iconify-icon></a></p></td>
+
+
+
+                {% ifequal s.EstadoSolicitud '17' %}
+                <td><a href="{% url 'comprobante' s.pk%}" class="btn btn-success"><iconify-icon icon="material-symbols:content-paste-search"></iconify-icon></a></td>
+                {% else %}
+                <td><a href="{% url 'seguimiento' s.pk%}" class="btn btn-success">Seguimiento</a></td>
+                <!--                 <td><a class="btn btn-success " href="{% url 'modificarSolicitudClienteExterno' s.pk%}">Continuar</a></td> -->
+                     
+                {% endifequal %}
+
+
+                
+                
 
             </tr>
         {% endfor %}

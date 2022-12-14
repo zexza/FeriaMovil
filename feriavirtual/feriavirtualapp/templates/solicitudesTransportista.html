@@ -72,7 +72,7 @@
             {% if s.EstadoSolicitud == "13" %}
             <td></td>
             {% else %}
-            <td><p class="boton_mod rounded "  ><a  href="{% url 'modificarSolicitudTransportista' s.pk%}">Modificar</a></p></td>
+            <td><p class="boton_mod rounded "  ><a  href="{% url 'modificarSolicitudTransportista' s.pk%}"><iconify-icon icon="uiw:setting"></iconify-icon></a></p></td>
             {% endif %} 
           </tr>
         {% endfor %}

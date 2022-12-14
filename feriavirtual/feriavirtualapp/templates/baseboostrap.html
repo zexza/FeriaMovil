@@ -53,20 +53,14 @@
 
           {% if request.user.rol == "1"%}  <!--Productor -->
  
-          <a class="nav-link" href="{% url 'solicitudesProductor' %}" >Solicitudes Productos</a>
-          <a class="nav-link" href="{% url 'solicitudesProductor' %}" >Seguimiento Productos</a>
-          <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento Lista</a>
-          <a class="nav-link" href="{% url 'ingresar-productos'  %}">Ingresar Productos</a>
-          <a class="nav-link" href="{% url 'mis-productos' %}" >Mis Productos</a>
+          
           <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(255, 0, 0); color: #ffffff;" >Cerrar Sesion</a>
 
           {% endif %}  
 
           {% if request.user.rol == "2"  %}  <!--Cliente externo -->
 
-          <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
-          <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
-          <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
+          
           <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(255, 0, 0); color: #ffffff;" >Cerrar Sesion</a>
 
           {% endif %}  
@@ -77,10 +71,7 @@
 
           
 
-          <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
-          <a class="nav-link" href="{% url 'Solicitud' %}">Solicitud</a>
-          <a class="nav-link" href="{% url 'Solicitudes' %}" >Solicitudes</a>
-          <a class="nav-link" href="{% url 'Ventalocal' %}" >Venta local</a>  
+          
           <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(255, 0, 0); color: #ffffff;" >Cerrar Sesion</a>
           
         
@@ -96,7 +87,7 @@
 
           {% if request.user.rol == "5"  %}  <!--Consultor -->
           <a class="nav-link" href="{% url 'seguimientoLista' %}" >Seguimiento</a>
-          <a class="nav-link" href="{% url 'Consulta' %}" >Seguimiento</a>
+          <a class="nav-link" href="{% url 'seguimientoComprobante' %}" >Seguimiento Comprobante</a>
           <a class="nav-link" href="{% url 'logout' %}" style="background-color: rgb(255, 0, 0); color: #ffffff;" >Cerrar Sesion</a>
           {% endif %}  
 

@@ -1,0 +1,316 @@
+
+{% load humanize %}
+{% load cart_tags %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Comprobante de pagó</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+      </head>
+<body>
+    
+<div class="card-header">
+    
+
+    <div> 
+
+        <div style="text-align: center;">
+    
+            <img src="https://i.ibb.co/LJfgc4j/fruit.png" width="140" height="140"alt="asdf">
+        </div>
+    
+        <div style="text-align: center;">
+        
+            <h2 style="color: #c4dc7e;">Feria Virtual Maipo Grande</h2>
+        </div>
+        
+        <BR>
+    
+        <div style="text-align: center;">
+        
+        <h1>COMPROBANTE DE PAGO</h1>
+    </div>
+    
+    
+    </div>
+    
+    <BR>
+
+
+
+
+
+<table class="table">
+    
+    <thead>
+        <tr>
+            <th scope="col">Fecha: </th>
+            <th scope="col" >Estado: </th>
+            <th scope="col">Numero de solicitud: </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+
+
+
+            <td >  <div>
+                <strong></strong>{{soli.fecha_creacion|date:"d/m/Y"}}<span> 
+            </div>    
+        </td>
+            
+            <td >    <div >
+                <strong ></strong>{{soli.get_EstadoSolicitud_display }}<span> 
+        </div>  
+     </td>
+
+        <td >   
+            
+            <div >
+                <strong  ></strong>{{soli.pk}}<span> 
+                </div>
+        </div> 
+     </td>
+            
+
+
+            
+        </tr>
+
+
+
+
+    </tbody>
+</table>
+
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col" width="50%"><h6 style="font-weight: bold;">De:</h6></th>
+                <th scope="col" width="50%"><h6 style="font-weight: bold;">Para:</h6></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+
+
+
+                <td >        <div class="col-6 col-md-6">
+
+                    <div>
+                        <strong>Maipo Grande</strong>
+                    </div>
+                    <div> Dirrecion: República Argentina 265-349, Santiago, Maipu</div>
+                    <div>9250000</div>
+                    <div>EMaipoGrande@mp.cl</div>
+                    <div>20.481.270-5</div>
+                    <div>+56 97664665</div>
+                </div></td>
+                
+                <td >        <div class="col-6 col-md-6">
+                    
+                    <div>
+                        <strong>{{soli.cliente.username }}</strong>
+                    </div>
+                    <div>{{soli.cliente.direccion }}</div>
+                    <div>{{soli.cliente.codigopostal}}</div>
+                    <div>marek@daniel.com</div>
+                    <div>{{soli.cliente.dni }}</div>
+                    <div>+56 97687665</div>
+                </div></td>
+                
+
+
+                
+            </tr>
+
+
+
+
+        </tbody>
+    </table>
+
+
+
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="2%" class="center">#</th>
+                                        <th scope="col" width="20%">Producto/Servicio</th>
+                                        <th scope="col"  width="50%">Productor</th>
+                                        <th scope="col" width="50%">Descripción</th>
+        
+                                        <th scope="col" width="10%" class="text-right">Precio Unitario</th>
+                                        <th scope="col" width="8%" class="text-right">Cantidad</th>
+                                        <th scope="col" width="10%" class="text-right">Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+
+                                        {%for p,c in Producto %}
+
+                                        <td >{{ forloop.counter }}</td>
+                                        <td > {{p.get_producto_display}}</td>
+                                        <td > {{p.autor}}</td>
+                                        <td > {{p.contenido}}</td>
+
+
+
+                                        <td >${{p.precio|intcomma}}</td>
+                     
+
+                                        <td>  {{c}}</td>
+                                     
+
+
+                                        <td >${{p.precio|multiply:c|intcomma}}</td>
+                                        
+
+
+                                        
+                                    </tr>
+
+                                    {%endfor%} 
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="2%" class="center">#</th>
+                                        <th scope="col" width="20%">Trasporte/Servicio</th>
+                                        <th scope="col" width="50%">Transportista</th>
+                                        <th scope="col"  width="50%">Tamaño</th>
+        
+                                        <th scope="col" width="10%" class="text-right">Refrigeracion</th>
+                                        <th scope="col" width="8%" class="text-right">Tarifa</th>
+                                        <th scope="col" width="10%" class="text-right">Total</th>
+                                    </tr>
+                                </thead>
+<br>
+                                <tbody>
+                                    <tr>
+
+                                      
+
+                                        <td class="text-left">1</td>
+                                        <td class="item_name">Trasporte</td>
+                                        <td class="item_name"> {{soli.transporte.transportista}}</td>
+                                        <td class="item_desc">{{soli.transporte.get_tamaño_display}}</td>
+
+
+                                        {% if soli.transporte.refrigeracion is True %}
+                                        <td class="text-right">Si</td>
+                                        {% else %}
+
+                                        <td class="text-right">No</td>
+
+                                        {% endif %}
+                                      
+                                        <td class="col-md-1" style="text-align: center"> ${{soli.transporte.tarifa|intcomma}}</td>
+                                     
+                                        <td class="text-right">${{soli.transporte.tarifa|intcomma}}</td>
+                                        
+
+
+                                        
+                                    </tr>
+
+                                   
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                      
+
+                    <div>
+
+
+                        <div class="row" style="padding-left: 500px;">
+                           
+                            <div class="col-lg-4 col-sm-5">
+                            </div>
+                            <div class="col-lg-4 col-sm-5 ml-auto">
+                                <table class="table table-sm table-clear">
+
+                                        <tr>
+                                            <td class="left">
+                                                <strong>Subtotal</strong>
+                                            </td>
+                                            <td class="text-right bg-light">$ {{subtotal}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left">
+                                                <strong>Impuesto (0.03 %)</strong>
+                                            </td>
+                                            <td class="text-right bg-light">$ {{impuesto}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left">
+                                                <strong>Total</strong>
+                                            </td>
+                                            <td class="text-right bg-light">
+                                                <strong>$ {{total}}</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+        
+                            </div>
+
+                        </div>
+
+                        <div style="text-align: end;">
+
+                            <a href="https://ibb.co/hX2pNq3"><img src="https://i.ibb.co/N1Wwq4c/check.png"  width="160" height="126,75"  alt="check" ></a>
+                    </div>
+                    
+                    <div class="footer container-fluid mt-3 bg-light">
+                        <div class="row">
+                            <div class="col footer-app">&copy; Todos los derechos reservados. <span class="brand-name"></span></div>
+                        </div>
+                    </div>
+                    </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</body>
+</html>
+        
+       
+        
+
+
+
+
+
+
+

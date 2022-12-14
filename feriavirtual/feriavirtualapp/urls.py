@@ -5,7 +5,15 @@ from django.conf.urls.static import static
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView
 from .views import *
+
+
+
+
 urlpatterns = [
+
+    path('ComprobantePDF/<int:pk>/', views.ComprobantePDF, name='ComprobantePDF'),
+
+    
     path('lista-contratos/', views.listaContratos, name='listaContratos'),
     path('gestion-contratos/', views.gestionContratos, name='gestionContratos'),
     path('contratos/', views.contratos, name='contratos'),
@@ -69,3 +77,4 @@ urlpatterns = [
     path('solicitudesClienteExterno/', views.solicitudesClienteExterno, name="solicitudesClienteExterno"),
     path('modificarSolicitudClienteExterno/<int:pk>/', views.modificarSolicitudClienteExterno, name="modificarSolicitudClienteExterno"),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

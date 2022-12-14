@@ -23,12 +23,72 @@ from .cart import Cart
 from .context_processor import cart_total_amount
 from django.views.decorators.csrf import csrf_protect
 from dash import Dash, dcc, html, Input, Output
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django_xhtml2pdf.utils import generate_pdf
+from django.db.models import Q
+from django.views.generic.base import View
+from wkhtmltopdf.views import PDFTemplateResponse
+import math
+from django.conf import settings
+from django.template.loader import get_template
+
+import os
+
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import pyodbc
 import json
-import numpy as np
+import pdfkit
+
+
+
+
+def ComprobantePDF(request,pk):
+    config_path = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=config_path)
+    
+    template_path = 'my_template.html'
+    template = get_template(template_path)
+    
+    soli = Post.objects.get(pk=pk)
+    Producto = []
+    subtotal=0
+    for p in soli.producto.all():
+        print()
+        postP = Post_productos.objects.get(producto=p, post=soli)
+        Producto.append([p,postP.cantidad_pujada])
+
+        subtotal = subtotal + postP.cantidad_pujada*p.precio
+    impuesto= subtotal*0.03
+    total = subtotal+impuesto
+    subtotal=str('{:,.0f}'.format(subtotal).replace(",", "@").replace(".", ",").replace("@", "."))
+    impuesto=str('{:,.0f}'.format(impuesto).replace(",", "@").replace(".", ",").replace("@", "."))
+    total=str('{:,.0f}'.format(total).replace(",", "@").replace(".", ",").replace("@", "."))
+    
+    context = {'debug': settings.DEBUG,'total':total,'impuesto':impuesto,'subtotal':subtotal,'Producto':Producto,'postP':postP,'soli':soli,}
+    
+    html = template.render(context)
+
+    pdf = pdfkit.from_string(html, configuration = config)
+
+
+    # Generate download
+    pdf_path = os.path.join(settings.BASE_DIR, 'static')
+    response = HttpResponse(pdf, content_type='application/pdf',  )
+
+    response['Content-Disposition'] = 'attachment; filename="resume.pdf"'
+    # print(response.status_code)
+    if response.status_code != 200:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+
+    
+
 
 
 a=1
@@ -57,7 +117,7 @@ def contratos(request):
            
             
             if Contrato.objects.filter(usuario=existeuser, vigencia=True):
-                messages.error(request, f'Este productor ya tiene un contrato vigente.')
+                messages.error(request, f'Este usuario ya tiene un contrato vigente.')
             else:  
                 cont.fecha_inicio = form.cleaned_data['fecha_inicio']
                 cont.fecha_termino = form.cleaned_data['fecha_termino']
@@ -66,7 +126,7 @@ def contratos(request):
                 else:
                     cont.vigencia = True
                     form.save()
-                    messages.success(request, f'Contrato para productor {cont.username} creado')
+                    messages.success(request, f'Contrato para usuario {cont.username} creado')
                     return redirect('contratos')
     else:
         form = FormContratos()
@@ -119,7 +179,7 @@ def seguimiento(request,pk):
     cart = Cart(request)        
     if request.user.is_staff:
         solis = Post.objects.filter(pk=pk)
-    elif request.user.rol =="1" or request.user.rol =="5" or request.user.rol =="3" or request.user.rol =="2":
+    elif request.user.rol =="1" or request.user.rol =="5" or request.user.rol =="3" or request.user.rol =="2" or request.user.rol =="6":
         solis = Post.objects.filter(pk=pk)
     else:
         solis = Post.objects.filter(usuario=request.user,pk=pk)
@@ -129,15 +189,27 @@ def seguimiento(request,pk):
 def seguimientoLista(request):
     user= request.user
     cart = Cart(request)
+    solis = []
+    prof = []
     if request.user.is_staff:
         solis = Post.objects.all()
     elif request.user.rol =="5":
          solis = Post.objects.all()
+    elif request.user.rol =="6":
+         solis = Post.objects.all()
     elif request.user.rol =="1":
         post = Post.objects.all()
+        print(post)
         for p in post:
+
             for prod in p.producto.filter(autor=user):
-                solis = Post.objects.filter(producto=prod)
+                print(prod)
+                postprod = Post_productos.objects.get(post=p, producto=prod)
+                s = Post.objects.get(pk=postprod.post.pk)
+                solis.append(s)
+
+
+
     elif request.user.rol =="2" or request.user.rol =="3":
         solis = Post.objects.filter(cliente=user)
     else:
@@ -149,31 +221,41 @@ def seguimientoLista(request):
 
 def comprobante(request,pk):
     cart = Cart(request)        
-    if request.user.is_staff:
-        solis = Post.objects.filter(pk=pk)
-    elif request.user.rol =="1" or request.user.rol =="5":
-        solis = Post.objects.filter(pk=pk)
-    else:
-        solis = Post.objects.filter(usuario=request.user,pk=pk)
-    context = {'solis':solis}
+    soli = Post.objects.get(pk=pk)
+    soliF = Post.objects.get(pk=pk)
+    Producto = []
+    subtotal=0
+    for p in soli.producto.all():
+        print()
+        postP = Post_productos.objects.get(producto=p, post=soli)
+        Producto.append([p,postP.cantidad_pujada])
+
+        subtotal = subtotal + postP.cantidad_pujada*p.precio 
+        
+    subtotal = subtotal + soli.transporte.tarifa
+    impuesto= subtotal*0.03
+    total = subtotal+impuesto
+    subtotal=str('{:,.0f}'.format(subtotal).replace(",", "@").replace(".", ",").replace("@", "."))
+    impuesto=str('{:,.0f}'.format(impuesto).replace(",", "@").replace(".", ",").replace("@", "."))
+    total=str('{:,.0f}'.format(total).replace(",", "@").replace(".", ",").replace("@", "."))
+    
+    context = {'total':total,'impuesto':impuesto,'subtotal':subtotal,'Producto':Producto,'postP':postP,'soli':soli,}
+    
+    
     return render(request, 'comprobante.html',context)
+
+
+
+
+
 
 def seguimientoComprobante(request):
     user= request.user
     cart = Cart(request)
-    if request.user.is_staff:
-        solis = Post.objects.all()
-    elif request.user.rol =="5":
-         solis = Post.objects.all()
-    elif request.user.rol =="1":
-        post = Post.objects.all()
-        for p in post:
-            for prod in p.producto.filter(autor=user):
-                solis = Post.objects.filter(producto=prod)
-    elif request.user.rol =="2" or request.user.rol =="3":
-        solis = Post.objects.filter(cliente=user)
+    if request.user.rol =="5":
+        solis = Post.objects.filter(EstadoSolicitud= '17')
     else:
-        solis = Post.objects.filter(usuario=request.user)
+        solis = Post.objects.filter(cliente=user,EstadoSolicitud= '17')
     context = {'solis':solis}
     return render(request, 'seguimientoComprobante.html',context)
 
@@ -226,8 +308,8 @@ def ingresarproductos(request):
 
 
 def connection(request):
-    s = '186.78.35.242\DESKTOP-A7GEGG2\SQL2019TAB,14334' #Your server name 
-    d = 'sqlite6' #name bd  
+    s = '186.78.254.17\DESKTOP-A7GEGG2\SQL2019TAB,14334' #Your server name 
+    d = 'sqlite8' #name bd  
     u = 'sa' #Your login
     p = 'Pvsa**2021' #Your login password
     cstr = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER='+s+';DATABASE='+d+';UID='+u+';PWD='+ p
@@ -236,182 +318,124 @@ def connection(request):
     
 
 def Consulta(request):
-    if request.method == 'POST':
-        form = FormEstadoSolicitud(request.POST)
-        if form.is_valid():
-            print(form)
-        return render(request, 'Consulta.html',)
-            
-    else:
-        form = FormEstadoSolicitud()
+    Estado = 'Completada'
+    solis = Post.objects.filter(EstadoSolicitud='17')
+    if  request.method == 'POST'and 'completada' in request.POST:
+        solis = Post.objects.filter(EstadoSolicitud='17')
+        Estado = 'Completada'
+    elif request.method == 'POST'and 'nocompletada' in request.POST:
+        solis = Post.objects.filter(EstadoSolicitud__in=("11","13"))
+        Estado = 'No Completada'
+    print(solis)
+    Producto = []
+    subtotal=0
+    tarifa =0
+    PostCobro =[]
+
+    for soli in solis:
+        for p in soli.producto.all():
+            postP = Post_productos.objects.get(producto=p, post=soli)
+            Producto.append([p,postP])
+            subtotal = subtotal + postP.cantidad_pujada*p.precio
+            PostCobro.append([str(soli.pk), postP.producto.pk,postP.producto.autor, postP.cantidad_pujada, p.precio, postP.cantidad_pujada*p.precio ,soli.transporte.tarifa,])
+        if soli.transporte:
+            tarifa = tarifa + soli.transporte.tarifa
+    Tarifaproductos=subtotal+tarifa
+    impuesto= Tarifaproductos*0.03
+    Cobro = Tarifaproductos+impuesto
+    subtotal=str('{:,.0f}'.format(subtotal).replace(",", "@").replace(".", ",").replace("@", "."))
+    impuesto=str('{:,.0f}'.format(impuesto).replace(",", "@").replace(".", ",").replace("@", "."))
+    Cobro=str('{:,.0f}'.format(Cobro).replace(",", "@").replace(".", ",").replace("@", "."))
+    Tarifaproductos=str('{:,.0f}'.format(Tarifaproductos).replace(",", "@").replace(".", ",").replace("@", "."))
+
+
+    DataFramePostCobro = pd.DataFrame(PostCobro,columns=['PostPK','PkProducto','Productor','CantidadPujada','PrecioProducto','PrecioProductos','TarifaTrasporte'])
+    print(DataFramePostCobro)
+   
+
+
+    DataframePost= pd.DataFrame(    DataFramePostCobro.groupby(['PostPK','TarifaTrasporte'])['PrecioProductos'].sum())
     
-
-    
-
-    #Fecha_json = json.dumps([P.fecha_creacion for P in PostObj], cls=DTEncoder)
-    #Usuario_json = json.dumps([P.usuario for P in PostObj])
-    select=('SELECT        dbo.feriavirtualapp_post.id, dbo.feriavirtualapp_post.cantidad_necesaria, dbo.feriavirtualapp_post.fecha_creacion, dbo.feriavirtualapp_post.EstadoSolicitud, dbo.feriavirtualapp_post_productos.cantidad_pujada,  dbo.feriavirtualapp_post_productos.post_id, dbo.feriavirtualapp_post_productos.producto_id, dbo.feriavirtualapp_producto.id AS Expr1, dbo.feriavirtualapp_producto.producto, dbo.feriavirtualapp_producto.precio,  dbo.feriavirtualapp_producto.autor_id, dbo.feriavirtualapp_post.transporte_id FROM            dbo.feriavirtualapp_post INNER JOIN dbo.feriavirtualapp_post_productos ON dbo.feriavirtualapp_post.id = dbo.feriavirtualapp_post_productos.post_id INNER JOIN dbo.feriavirtualapp_producto ON dbo.feriavirtualapp_post_productos.producto_id = dbo.feriavirtualapp_producto.id')    
-    conn = connection(request)
-    df_merge_dataframe = pd.read_sql(select, conn)
-    post = Post.objects.all()
-    productos= Producto.objects.all()
-    
-    
-    
-    #Fecha_json = json.dumps([P.fecha_creacion for P in PostObj], cls=DTEncoder)
-    #Usuario_json = json.dumps([P.usuario for P in PostObj])
-    
-
-    
-
-        
-    DfPostPk= pd.DataFrame([str(p.pk) for p in post], columns=['pk'])
-    DfUsuario = pd.DataFrame([str(p.cliente) for p in post], columns=['Usuario'])
-    DfTransportista = pd.DataFrame([str(p.transportista) for p in post], columns=['Transportista'])
-    DfFecha = pd.DataFrame([p.fecha_creacion for p in post], columns=['Fecha'])
-    DfProducto = pd.DataFrame([str(p.producto) for p in post], columns=['Producto'])
-    DfProductoVariedad= pd.DataFrame([str(p.variedad) for p in post], columns=['variedad'])
-    
-    DataframeConsulta =  pd.concat([DfUsuario, DfFecha,DfTransportista,DfProducto,DfProductoVariedad],axis=1)
-    DataframeConsulta = DataframeConsulta.fillna(0)
-    
-    
-    
-    DfproductosPrecio = pd.DataFrame([str(p.precio) for p in productos], columns=['precio'])
-    DfProductosProducto = pd.DataFrame([str(p.producto) for p in productos], columns=['producto'])
-    DfProductosVariedad= pd.DataFrame([str(p.variedad) for p in productos], columns=['variedad'])
-    DfProductosUsername= pd.DataFrame([str(p.autor.username) for p in productos], columns=['username'])
-    
-    DataframeProductos =  pd.concat([DfproductosPrecio,DfProductosProducto,DfProductosVariedad,DfProductosUsername],axis=1)
-
-    
-
-
-
-
-
-    #join User 
-    df_user_cliente = pd.DataFrame.from_records(list(User.objects.all().values('id','username')),)
-    
-    df_merge_dataframe = pd.merge(df_user_cliente, df_merge_dataframe, left_on='id', right_on='autor_id')
-    df_merge_dataframe.rename(columns = {'username':'NombreProductor',},  inplace = True)  
-    df_merge_dataframe.drop('id_x', inplace=True, axis=1)
-    df_merge_dataframe.drop('id_y', inplace=True, axis=1)
-    df_merge_dataframe=df_merge_dataframe.sort_values(by=['post_id'])
-
-    
-
-    
-
-    
-    PrecioFinalProductor=df_merge_dataframe['precio'] * df_merge_dataframe['cantidad_pujada']
-    df_merge_dataframe.insert(2, "PrecioFinalProductor", PrecioFinalProductor, True)
-    
-    
-    df_total_neto_productores =df_merge_dataframe['PrecioFinalProductor'].sum()
-    
-    df_total_neto_post = df_merge_dataframe.groupby(['post_id'])['PrecioFinalProductor'].sum()
-    dfGroupbyPostIdCount= pd.DataFrame(df_total_neto_post)
-
-
-
-    #Join trasporte-
-    df_trasporte = pd.DataFrame.from_records(list(Transporte.objects.all().values('id','tarifa')),)
-    df_merge_dataframe_trasporte = pd.merge(df_merge_dataframe, df_trasporte, left_on='transporte_id', right_on='id')
-    df_merge_dataframe_trasporte=df_merge_dataframe_trasporte.sort_values(by=['post_id'])
-
-    DfGroupbyPostTotalProductor= df_merge_dataframe_trasporte.groupby(['post_id'])['PrecioFinalProductor'].sum()
-    DfGroupbyPostTotalProductor= pd.DataFrame(DfGroupbyPostTotalProductor)
-    DfGroupbyPostTotalProductor.rename(columns = {'PrecioFinalProductor':'PrecioFinalPostProductor', }, inplace = True) 
-    df_merge_dataframe_trasporte = pd.merge(df_merge_dataframe_trasporte, DfGroupbyPostTotalProductor, left_on='post_id', right_on='post_id')
-
- 
-    dataframeTarifaProductor=df_merge_dataframe_trasporte['PrecioFinalPostProductor']+df_merge_dataframe_trasporte['tarifa']
-    df_merge_dataframe_trasporte.insert(13, "PrecioFinaltarifaproductor", dataframeTarifaProductor, True)
-    
-    df_merge_dataframe_trasporte.insert(14, "PrecioFinaltarifaproductorGanancia",((df_merge_dataframe_trasporte['PrecioFinaltarifaproductor']*0.3)+(df_merge_dataframe_trasporte['PrecioFinaltarifaproductor'])) , True)
-    
-    
-    df_merge_dataframe_trasporte.insert(15, "Ganancia", (dataframeTarifaProductor)*0.3, True)
-    df_merge_dataframe_trasporte.insert(16, "IdPost", df_merge_dataframe_trasporte['post_id'], True)
-    
-  
-
-
-    print(df_merge_dataframe_trasporte)
-
-  
-
-
-
-
-    DataframePost= pd.DataFrame(    df_merge_dataframe_trasporte.groupby(['EstadoSolicitud', 'cantidad_necesaria', 
-       'fecha_creacion', 'tarifa',
-       'PrecioFinalPostProductor', 'PrecioFinaltarifaproductor',
-       'PrecioFinaltarifaproductorGanancia', 'Ganancia','IdPost'])['post_id'].size())
-    
-
-
     DataframePost= pd.DataFrame(  DataframePost.reset_index() )
-       
-    DataframePost=DataframePost.sort_values(by=['IdPost'])
-    Df_grouPostIDPrecioFinalTotal = DataframePost['PrecioFinaltarifaproductorGanancia'].sum()
-    Df_grouPostIDPrecioFinalTotal= str('{:,.0f}'.format(Df_grouPostIDPrecioFinalTotal).replace(",", "@").replace(".", ",").replace("@", "."))
     
+    DataframePost= pd.DataFrame(    DataFramePostCobro.groupby(['PostPK','TarifaTrasporte'])['PrecioProductos'].sum())
+    
+    DataframePost= pd.DataFrame(  DataframePost.reset_index() )
+    
+    Pagatarifatrasporte=DataframePost['TarifaTrasporte'] + DataframePost['PrecioProductos']
+    DataframePost.insert(3, "Pagatarifatrasporte", Pagatarifatrasporte, True)
+    
+    CobroFinal =DataframePost['Pagatarifatrasporte'] *1.03
+    DataframePost.insert(4, "CobroFinal", CobroFinal, True)
+    
+    Ganacias =DataframePost['Pagatarifatrasporte'] *0.03
+    DataframePost.insert(5, "Ganacias", Ganacias, True)
+
+    print(DataframePost)
+
+    '''Graficos'''
 
 
-    
-    Df_grouPostIDGananciaTotal = DataframePost['Ganancia'].sum()
-    Df_grouPostIDGananciaTotal= str('{:,.0f}'.format(Df_grouPostIDGananciaTotal).replace(",", "@").replace(".", ",").replace("@", "."))
-    
-    
-    DataframeConsultaSumaProductor = DataframePost['PrecioFinalPostProductor'].sum()
-    DataframeConsultaSumaProductor= str('{:,.0f}'.format(DataframeConsultaSumaProductor).replace(",", "@").replace(".", ",").replace("@", "."))
-    
-    
-    DataframeConsultaSumaProductortarifa = DataframePost['PrecioFinaltarifaproductor'].sum()
-    DataframeConsultaSumaProductortarifa= str('{:,.0f}'.format(DataframeConsultaSumaProductortarifa).replace(",", "@").replace(".", ",").replace("@", "."))
 
-    
-    
-
-    
-
-
-    GrupbyProducto = DataframeConsulta.groupby(['variedad'])['variedad'].count()
-
-    
-
-
-    
-
-    
-
-
-    
-    
-    
-    
-    
-    figGeneral = go.Figure(go.Scatter(
-    x=DataframePost['IdPost'],y=DataframePost['PrecioFinaltarifaproductorGanancia']))
-
-    figGeneral.update_layout(
-        xaxis_title="Solicitud ID",
-        yaxis_title="Cobro Finla X Solicitud",
-        title={
-            'text': "Plot Title",
-            'y':0.9,
-            'x':0.5,
-            
-            'xanchor': 'center',
-            'yanchor': 'top'}
+    figGeneral = px.bar(DataframePost, x='PostPK',y='CobroFinal', color='PostPK',
+        title="Solicitud / Cobro Final",
         
-        )
+    )
+    figGeneral.update_layout(
+        title={
+            'font_size': 24,
+            'xanchor': 'center',
+            'x': 0.5
+    })
     
-
+    
     chartGeneral = figGeneral.to_html()
 
+
+
+
+    figP = px.bar(DataframePost, x='PostPK',y='TarifaTrasporte', color='PostPK',
+        title="Solicitud / Tarifa Trasporte",
+        
+    )
+    figP.update_layout(
+        title={
+            'font_size': 24,
+            'xanchor': 'center',
+            'x': 0.5
+    })
+    chartP = figP.to_html()
+
+    figProd = px.bar(DataframePost, x='PostPK',y='PrecioProductos', color='PostPK',
+        title="Solicitud / Precio Productos",
+       
+    )
+    figProd.update_layout(
+        title={
+            'font_size': 24,
+            'xanchor': 'center',
+            'x': 0.5
+    })
+    chartfigProd = figProd.to_html()
+    
+    fig = px.bar(DataframePost, x='PostPK',y='Ganacias', color='PostPK',
+                title="Solicitud / Ganacias ",
+               
+    )
+    fig.update_layout(
+        title={
+            'font_size': 24,
+            'xanchor': 'center',
+            'x': 0.5
+    })
+    chart = fig.to_html()
+
+
+
+    context = {'chart':chart,'chartfigProd':chartfigProd,'chartP':chartP,'chartGeneral':chartGeneral,'Tarifaproductos':Tarifaproductos,'Estado':Estado,'tarifa':tarifa,'Cobro':Cobro,'impuesto':impuesto,'subtotal':subtotal,'Producto':Producto}
+    return render(request, 'Consulta.html',context)
+        
+    '''
     figUsuario = px.bar(DataframeConsulta, x='Transportista',
         title="Post/Transportista",
         labels={'Usuario': 'Usuario', 'Fecha': 'Fecha'}, color='Transportista',
@@ -447,7 +471,6 @@ def Consulta(request):
     
     
     figP.update_layout(
-
     title="Plot Title",
     font=dict(
         family="Courier New, monospace",
@@ -457,7 +480,8 @@ def Consulta(request):
 )
     chartP = figP.to_html()
     context = { 'DataframeConsultaSumaProductortarifa':DataframeConsultaSumaProductortarifa,'DataframePost':DataframePost,'form': form ,'chart': chart,'chartP': chartP,'chartUsuario':chartUsuario,'DataframeConsultaSumaProductor':DataframeConsultaSumaProductor,'Df_grouPostIDPrecioFinalTotal':Df_grouPostIDPrecioFinalTotal,'Df_grouPostIDGananciaTotal':Df_grouPostIDGananciaTotal,'chartGeneral':chartGeneral}
-    return render(request, 'Consulta.html',context)
+        '''
+
 
 
 
@@ -490,12 +514,10 @@ def venta(request):
     if request.method == 'POST':
         form = FormVenta(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.cliente = form.cleaned_data['cliente']
-            post.user = request.user
-            post.fecha_creacion = timezone.now()
-            post.imagen = request.FILES['imagen'] if 'filepath' in request.FILES else False
-            post.save()
+            form = form.save(commit=False)
+            form.usuario = request.user
+            form.fecha_creacion = timezone.now()
+            form.save()
             messages.success(request, f'Venta iniciada!')
             return redirect('/')
     else:
@@ -544,6 +566,13 @@ def terminar(request,pk):
         soli = Post.objects.get(pk=pk)
         soli.EstadoSolicitud = "17"
         soli.save()
+        ccorreo= soli.cliente.email
+        '''send_mail(
+                'Su producto a sido completado, revise el comprobante de pago en http://127.0.0.1:8000/seguimientoComprobante/',
+                'maipo_grande@gmail.com',
+                [ccorreo],
+                fail_silently=False,)
+           '''                        
         #================COMPROBANTES DE PAGO==================
         #================PRODUCTORES==========================
         cantidadprods = len(soli.producto.all())
@@ -575,11 +604,11 @@ def Solicitud(request):
     if request.method == 'POST':
         form = FormVenta(request.POST, request.FILES)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.usuario = request.user
-            post.fecha_creacion = timezone.now()
-            post.imagen = request.FILES['imagen'] if 'filepath' in request.FILES else False
-            post.save()
+            form = form.save(commit=False)
+            form.usuario = request.user
+            form.fecha_creacion = timezone.now()
+            
+            form.save()
             messages.success(request, f'Venta iniciada!')
             return redirect('/Solicitudes')
     else:
@@ -593,10 +622,8 @@ def solicitudClientes(request):
         form = FormVentaCliente(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.cliente = request.user
             post.usuario = request.user
             post.fecha_creacion = timezone.now()
-            post.imagen = request.FILES['imagen'] if 'filepath' in request.FILES else False
             post.save()
             messages.success(request, f'Solicitud enviada')
             return redirect('/Solicitudes')
@@ -606,9 +633,15 @@ def solicitudClientes(request):
     return render(request, 'solicitudClientes.html',context)
 
 def solicitudes(request):
-    soli = Post.objects.filter(EstadoSolicitud__in=("3","4"))
     cart = Cart(request)
-    context ={'soli':soli}
+    solis = []
+    soli = Post.objects.filter(EstadoSolicitud__in=("3","4","6","10"))
+    for s in soli:
+        if not s.transportista:
+            solis.append(s)
+
+    
+    context ={'solis':solis}
     return render(request, 'Solicitudes.html', context)
 
 def solicitudesTransportista(request):
@@ -624,13 +657,21 @@ def solicitudesRevisor(request):
     return render(request, 'solicitudesRevisor.html', context)
 def solicitudesProductor(request):
     cart = Cart(request)
-    post = Post.objects.all()
+    post = Post.objects.filter(EstadoSolicitud__in=("1","4","5"))
+    solip = []
+    enbodega = False
     for p in post:
+       
         for prod in p.producto.filter(autor=request.user):
-            solip = Post.objects.filter(producto=prod,EstadoSolicitud__in=("1","4","5"))
+            post_prod = Post_productos.objects.get(post=p, producto= prod)
+            enbodega=post_prod.enbodega
+            
+            solip = Post.objects.filter(producto=prod)
 
 
-    context ={'solip':solip}
+
+    context ={'solip':solip,'enbodega':enbodega}
+    
     return render(request, 'solicitudesProductor.html', context)
 def solicitudesClienteExterno(request):
     cart = Cart(request)
@@ -648,16 +689,18 @@ def modificarSolicitud (request, pk):
             SolicitudPK = Post.objects.get(pk = pk)
 
             topProductoresCProductos = []
-            productoscProductor = Producto.objects.filter().values_list('autor_id').distinct()
+            productoscProductor = Producto.objects.all()
+            print(productoscProductor)
+            
             for prod in productoscProductor:
-                productorunico = User.objects.get(id=int(prod[0]),disponible=True)
+                productorunico = User.objects.get(username=prod.autor.username,disponible=True)
                 try:
                     if Contrato.objects.get(usuario=productorunico,vigencia=True):
                         topProductoresCProductos.append(productorunico)
                 except Contrato.DoesNotExist:
                     messages.error(request, f'No hay productores con contrato disponibles')
 
-            
+    
             cantidadnecesaria= SolicitudPK.cantidad_necesaria
             productonecesario = SolicitudPK.productoreq
             calibrenecesario = SolicitudPK.calibre
@@ -670,17 +713,23 @@ def modificarSolicitud (request, pk):
                 topProductos = []
                 topProductos1 = []
                 topcaso3 = []
+  
                 for productor in topProductoresCProductos:
                     try:
                         producto1 = Producto.objects.get(autor=productor,variedad=variedadnecesaria, producto=productonecesario, calibre=calibrenecesario,Saldo=False)
-                        topProductos.append(producto1)
+                        print(str(producto1.autor)+str(producto1.producto)+str(producto1.variedad))
+                        if not producto1 in topProductos:
+                            topProductos.append(producto1)
                     except Producto.DoesNotExist:
-                        print("Ningun producto califica en calibre/producto/saldo")
+                        print(str(producto1)+"califica en calibre/producto/saldo")
+                print(topProductos)
                 for prodidoneo in topProductos:                    
                     if prodidoneo.cantidad >= cantidadnecesaria:
                         topProductos1.append(prodidoneo)                        
                     else: 
                         topcaso3.append(prodidoneo)
+                        print(prodidoneo)
+
                 try:
                     min_precio = min(topProductos1, key=attrgetter('precio'))
                     min_precio = min_precio.precio
@@ -702,7 +751,13 @@ def modificarSolicitud (request, pk):
                                     #cantidad actual ya n       o seria necesaria
                                     SolicitudPK.cantidad_actual = cantidadnecesaria
                                     SolicitudPK.EstadoSolicitud = "4"
-                                    SolicitudPK.producto.add(productoganador) 
+                                    SolicitudPK.producto.add(productoganador)
+
+
+                                    postprod= Post_productos.objects.get(post=SolicitudPK, producto=productoganador)
+                                    postprod.cantidad_pujada = cantidadnecesaria
+                                    postprod.save()
+
                                     SolicitudPK.save()
                                     
                                     #ENVIAR CORREO AL PRODUCTOR PARA QUE LLEVE SUS PRODUCTOS A BODEGA
@@ -716,10 +771,10 @@ def modificarSolicitud (request, pk):
                                         fail_silently=False,
                                     )
                                     '''
-                            messages.success(request, f'Se ha notificado al productor para que lleve sus productos a bodega')        
-
+                                    messages.success(request, f'Se ha notificado al productor para que lleve sus productos a bodega')        
                         #Si hay mas de un productor que califica en calibre,cantidad 
                         elif len(topProductos1) >= 2:
+                            print('========================topproductos1')
                             print(topProductos1)
                             #Se seleccionan los dos primeros (Top 2)
                             for ganador in topProductos1[:2]:
@@ -730,6 +785,7 @@ def modificarSolicitud (request, pk):
                                     cantidaddividida= cantidadnecesaria//2
                                     productoganador.cantidad = productoganador.cantidad - cantidaddividida
                                     productoganador.save()
+                                    print('========================productoganador.cantidad')
                                     print(productoganador.cantidad)
                                     #se actualiza la solicitud a subasta de transporte y la cantidad actual se llena
                                     #SolicitudPK.cantidad_actual = SolicitudPK.cantidad_actual+cantidaddividida
@@ -738,6 +794,11 @@ def modificarSolicitud (request, pk):
                                     #productores ganadores ya no estan disponibles
                                     productoganador.autor.disponible=False
                                     #Debe ser un arreglo de productores(pueden ser mas de un productor ganador)
+
+           
+                                    postprod= Post_productos.objects.get(post=SolicitudPK, producto=productoganador)
+                                    postprod.cantidad_pujada = cantidaddividida
+                                    postprod.save()
                                     SolicitudPK.producto.add(productoganador)
 
 
@@ -758,6 +819,7 @@ def modificarSolicitud (request, pk):
                             messages.success(request, f'Se ha notificado a los productores para que lleven sus productos a bodega')
                     else:
                         topcaso3.sort(key = operator.attrgetter('cantidad'),reverse=True)
+                        print(topcaso3)
                         if any(topcaso3):
                             cntsumada = 0
                             prodpuja= []
@@ -806,10 +868,10 @@ def modificarSolicitud (request, pk):
                                 
                                 messages.success(request, f'Se ha notificado al productor para que lleve sus productos a bodega')    
                                 print(SolicitudPK.producto.all())   
-                            else:
-                                SolicitudPK.EstadoSolicitud= '3'
-                                messages.error(request, f'No hay productos suficientes para satisfacer el pedido.')
-
+                        else:
+                            SolicitudPK.EstadoSolicitud= '3'
+                            messages.error(request, f'No hay productos suficientes para satisfacer el pedido.')
+                print(SolicitudPK.producto.exists())
                 if SolicitudPK.producto.exists():
                     #SUBASTA DE TRANSPORTE
                     '''==TABLA DE TAMAÑOS TRANSPORTISTA==
@@ -820,51 +882,87 @@ def modificarSolicitud (request, pk):
                     )
                     '''
                     #Pallet: 1000 x 1000 mm
-                    Cajas= 32
-                    pallets=SolicitudPK.cantidad_necesaria//Cajas
-                    
-                    if pallets >= 0 and pallets <=12:
+                    Cajas= 32.0
+                    cantidad = SolicitudPK.cantidad_necesaria
+                    pallets=-(-cantidad // Cajas)
+
+                    tamañonecesario = ''
+                    if pallets >= 1 and pallets <=12:
                         tamañonecesario= '1'
-                    elif pallets >=12 and pallets <=32:
+                    elif pallets >12 and pallets <=32:
                         tamañonecesario= '2'
                     elif pallets > 32:
                         tamañonecesario = '3'
 
+                    print(tamañonecesario)
+
+
                     transportes=[]
                     #Se trae solo a los transportistas disponibles
                     transps = User.objects.filter(rol="4",disponible=True)
+                    print(transps)
                     for ut in transps:
                         try:
                             tg=Transporte.objects.get(transportista=ut,tamaño=tamañonecesario, refrigeracion=refrigeracionnecesaria)
-                            transportes.append(tg)
+                            try:
+                                if Contrato.objects.get(usuario=ut,vigencia=True):
+                                    transportes.append(tg)
+                            except Contrato.DoesNotExist:
+                                print('Transportista '+str(ut.username)+" no tiene contrato vigente")
+
                         except:
                             print('Transportista '+str(ut.username)+" no califica por disponibilidad/tamaño/refrigeracion")
+                    print(transportes)
                     try:
                         min_tarifa = min(transportes, key=attrgetter('tarifa'))
                     except:
                         print("No hay ningun transportista para calcular el precio minimo ")
-                    if len(transportes) == 1:
-                        tganador = transportes[0]
-                        print(tganador)
-                        SolicitudPK.transportista = tganador.transportista
-                        SolicitudPK.transporte = tganador
-                        #NOTIFICAR AL TRANSPORTISTA DE HABER GANADO LA SUBASTA
-                        '''
-                        tcorreo = tganador.transportista.email
-                        destino = productoganador.autor.direccion
-                        send_mail(
-                            'SUBASTA DE TRANSPORTE ',
-                            'Acabas de ganar la subasta de transporte y fuiste seleccionado para transportar los productos:\nDestino: ',
-                            'maipo_grande@gmail.com',
-                            [tcorreo],
-                            fail_silently=False,
-                        )
-                        '''
-                        SolicitudPK.EstadoSolicitud = "5"
-                        tganador.transportista.disponible=False
-                        tganador.transportista.save()
-                        SolicitudPK.save()
-                        messages.success(request, f'Se ha escogido un transportista adecuado para el envio.')
+
+
+                    if len(transportes) >= 1:
+                        print(transportes)
+                        tganadores=[]
+                        for t in transportes:
+                            if t.tarifa <= min_tarifa.tarifa:
+                                tganadores.append(t)
+
+                        tganador=tganadores[0]
+
+                        print(tganadores)
+                        if tganador.tarifa <= min_tarifa.tarifa:
+                            print(str(tganador.tarifa)+str(min_tarifa.tarifa))
+                            SolicitudPK.transportista = tganador.transportista
+                            SolicitudPK.transporte = tganador
+                            #NOTIFICAR AL TRANSPORTISTA DE HABER GANADO LA SUBASTA
+                            '''
+                            tcorreo = tganador.transportista.email
+                            destino = productoganador.autor.direccion
+                            send_mail(
+                                'SUBASTA DE TRANSPORTE ',
+                                'Acabas de ganar la subasta de transporte y fuiste seleccionado para transportar los productos:\nDestino: ',
+                                'maipo_grande@gmail.com',
+                                [tcorreo],
+                                fail_silently=False,
+                            )
+                            '''
+                            if SolicitudPK.EstadoSolicitud == "10":
+                                SolicitudPK.EstadoSolicitud = "10"
+                                tganador.transportista.disponible=False
+                                tganador.transportista.save()
+                                SolicitudPK.save()
+                                messages.success(request, f'Se ha escogido un transportista adecuado para el envio.')
+                            elif SolicitudPK.EstadoSolicitud == "6":
+                                SolicitudPK.EstadoSolicitud = "6"
+                                tganador.transportista.disponible=False
+                                tganador.transportista.save()
+                                SolicitudPK.save()
+                                messages.success(request, f'Se ha escogido un transportista adecuado para el envio.')
+                            else:
+                                SolicitudPK.EstadoSolicitud = "5"
+                                tganador.transportista.disponible=False
+                                tganador.transportista.save()
+                                SolicitudPK.save()
+                                messages.success(request, f'Se ha escogido un transportista adecuado para el envio.')
                     elif len(transportes) == 0:
                         print("No hay transportistas disponibles en este momento")
                         messages.error(request, f'No hay transportistas que cumplan los requisitos en este momento, vuelve a intentarlo mas tarde.')
@@ -925,8 +1023,13 @@ def modificarSolicitudRevisor(request, pk):
             soli = Post.objects.get(pk = pk)
             soli.EstadoSolicitud = form.cleaned_data['EstadoSolicitud']
             soli.save()
-            messages.success(request, f'Guardado exitosamente')
-            return redirect('/solicitudesTransportista')
+            if soli.transportista:
+
+                messages.success(request, f'Revision aprobada, el transportista ya puede llevar los productos')
+            else:
+                messages.warning(request, f'Revision aprobada, pero aun falta asignar un transportista al pedido')
+
+            return redirect('/solicitudesRevisor')
     else:
         form = FormSolicitudEstadoRevisor(instance=soli)
     context = { 'form': form }
@@ -934,15 +1037,37 @@ def modificarSolicitudRevisor(request, pk):
 
 def modificarSolicitudProductor(request, pk):
     cart = Cart(request)
+
+    enbodega=[]
     soli= Post.objects.get(pk=pk)
     if request.method == 'POST':
         form = FormSolicitudEstadoProductor(request.POST,instance=soli)
         if form.is_valid():
             soli = form.save(commit=False)
             soli = Post.objects.get(pk = pk)
-            soli.EstadoSolicitud = form.cleaned_data['EstadoSolicitud']
             soli.save()
-            messages.success(request, f'Guardado exitosamente')
+            soli.EstadoSolicitud = form.cleaned_data['EstadoSolicitud']
+            if soli.EstadoSolicitud == '6':
+                
+                for p in soli.producto.all():
+                    Post_producto =Post_productos.objects.get(post=soli, producto=p)
+                    if p.autor == request.user:
+                        Post_producto.enbodega=True
+                        Post_producto.save()
+                    enbodega.append(Post_producto.enbodega)
+
+                cantprod = len(soli.producto.all())
+                n= 0
+                for e in enbodega:
+                    if e == True:
+                        n=n+1
+                if cantprod == n:
+                    soli.EstadoSolicitud = '6'
+                    soli.save()
+                    
+                print(cantprod)
+                print(n)
+            messages.success(request, f'Has avisado que tus productos estan en bodega')
             return redirect('/solicitudesProductor')
     else:
         form = FormSolicitudEstadoProductor(instance=soli)
@@ -1016,9 +1141,20 @@ def Ventalocal(request):
 @csrf_protect
 def add_product_catalogo(request, product_id):
     cart = Cart(request)
-    product = Producto.objects.get(id=product_id)
-    cart.add(product=product)
-    messages.success(request, f'{product.get_producto_display()} agregado al carrito')
+    cantidadacomprar=0
+    product = Producto.objects.get(pk=product_id)
+
+    for (key, value) in request.session['cart'].items():
+        print(value['product_id'])
+        print(product.pk)
+        if value['product_id'] == product.pk: 
+            cantidadacomprar= product.cantidad- int(value['quantity'])
+    if cantidadacomprar > 0:
+        cart.add(product=product)
+        messages.success(request, f'{product.get_producto_display()} agregado al carrito')
+    else:
+        messages.warning(request, f'No quedan mas unidades de este producto') 
+
     return redirect("/Venta-local")
 
 
@@ -1080,19 +1216,27 @@ def webpay(request):
 
 def webpaycommit(request):
     cart = Cart(request)
-    productos=[]
+    productos= []
+    cantidades=[]
     for key,value in request.session['cart'].items():
-        cantidad = int( value['quantity'])
-        id = ( value['product_id'])  
-        product = Producto.objects.get(pk=id) 
-        product.cantidad= product.cantidad-cantidad
-        productos.append(product)
+        
+        cantidadpujada = int(value['quantity'])
+        id = value['product_id']
 
+        product = Producto.objects.get(pk=id) 
+        product.cantidad= product.cantidad-cantidadpujada
+        
+        
+        
+        productos.append([product, cantidadpujada])
+
+
+    print(productos)
     token = request.GET.get("token_ws")
     response = Transaction().commit(token)  
     response['transaction_date'] = datetime.strptime(response['transaction_date'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
-    return render(request, 'terminarsaldo.html',{"token": token,"response": response, "productos":productos,"cantidad":cantidad})
+    return render(request, 'terminarsaldo.html',{"token": token,"response": response, "productos":productos})
     
 
 def webpayplus_reembolso(request):

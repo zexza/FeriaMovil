@@ -14,6 +14,16 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+WKHTMLTOPDF_CMD_OPTIONS = {
+'quiet': True,
+}
+
+if os.name != 'nt':
+    WKHTMLTOPDF_CMD = '/usr/local/bin/wkhtmltopdf'
+else:
+    WKHTMLTOPDF_DEBUG = True
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -23,9 +33,9 @@ SECRET_KEY = '&@6ghnnsg2^&$ddsq2i4=sk=q7(2p#dl@$8hq5*jg#_v1xu3p$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 ALLOWED_HOSTS = ['192.168.1.15','198.211.99.20', 'localhost', '127.0.0.1']
-#ALLOWED_HOSTS = ['198.211.99.20', 'localhost', '127.0.0.1']
-#ALLOWED_HOSTS = ['192.168.1.15']
+
 
 # Application definition
 
@@ -75,20 +85,20 @@ WSGI_APPLICATION = 'feriavirtual2.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
+
 DATABASES = {
 'default': {
 'ENGINE': "sql_server.pyodbc",
-'HOST': "186.78.35.242\DESKTOP-A7GEGG2\SQL2019TAB,14334",
+'HOST': "54.158.65.109\EC2AMAZ-UPCAOU7,1433",
 'USER': "sa",
-'PASSWORD': "Pvsa**2021",
-'NAME': "sqlite6",
+'PASSWORD': "xxCxx123,",
+'NAME': "BDFERIA",
 'OPTIONS': {"driver": "ODBC Driver 17 for SQL Server", 
 'host_is_server': True
 },
 }
 }
-
-
 
 
 # Password validation
@@ -131,7 +141,6 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 AUTH_USER_MODEL = 'feriavirtualapp.User'
 LOGIN_REDIRECT_URL = 'seguimientoLista'
 
@@ -142,3 +151,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'servidorgenerico2020@gmail.com'
 EMAIL_HOST_PASSWORD = 'myppdduuhvoxeiob'
+
+

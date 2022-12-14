@@ -1,0 +1,235 @@
+{% extends 'baseboostrap.html' %}
+{% load humanize %}
+{% load static %}
+{% load cart_tags %}
+{% block content %}
+
+
+
+
+
+
+
+
+        
+        <div class="main">
+            <div class="container mt-3">
+                <div class="card animate__animated animate__fadeIn">
+                    <div class="card-header">
+
+                        <strong>Fecha: </strong>
+
+                        {{soli.fecha_creacion|date:"d/m/Y"}}<span class="float-right"> 
+
+                            <strong>Estado: </strong>{{soli.get_EstadoSolicitud_display }}</span>
+        
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-6 col-md-6">
+                                <h6 class="mb-2">De:</h6>
+                                <div>
+                                    <strong>Maipo Grande</strong>
+                                </div>
+                                <div> Dirrecion: República Argentina 265-349, Santiago, Maipu</div>
+                                <div>Codigo Postal: 9250000</div>
+                                <div>Email: MaipoGrande@mp.cl</div>
+                                <div>Rut:  20.481.270-5</div>
+                                <div>Numero: +48 444 666 3333</div>
+                            </div>
+
+
+                            <div class="col-6 col-md-6">
+                                <h6 class="mb-2">Para:</h6>
+                                <div>
+                                    <strong>{{soli.cliente.username }}</strong>
+                                </div>
+                                <div>Dirrecion: {{soli.cliente.direccion }}</div>
+                                <div>Codigo Postal: {{soli.cliente.codigopostal}}</div>
+                                <div>Email: marek@daniel.com</div>
+                                <div>Rut:  {{soli.cliente.dni }}</div>
+                                <div>Numero: +56 97687665</div>
+                            </div>
+        
+                        </div>
+
+
+                           
+
+
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="2%" class="center">#</th>
+                                        <th scope="col" width="20%">Producto/Servicio</th>
+                                        <th scope="col" class="d-none d-sm-table-cell" width="50%">Productor</th>
+                                        <th scope="col" class="d-none d-sm-table-cell" width="50%">Descripción</th>
+        
+                                        <th scope="col" width="10%" class="text-right">Precio Unitario</th>
+                                        <th scope="col" width="8%" class="text-right">Cantidad</th>
+                                        <th scope="col" width="10%" class="text-right">Total</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+
+                                        {%for p,c in Producto %}
+
+                                        <td class="text-left">{{ forloop.counter }}</td>
+                                        <td class="item_name"> {{p.get_producto_display}}</td>
+                                        <td class="item_name"> {{p.autor}}</td>
+                                        <td class="item_desc d-none d-sm-table-cell">{{p.contenido}}</td>
+
+
+
+                                        <td class="text-right">${{p.precio|intcomma}}</td>
+                     
+
+                                        <td class="col-md-1" style="text-align: center">  {{c}}</td>
+                                     
+
+
+                                        <td class="text-right">${{p.precio|multiply:c|intcomma}}</td>
+                                        
+
+
+                                        
+                                    </tr>
+
+                                    {%endfor%} 
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="table-responsive-sm">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" width="2%" class="center">#</th>
+                                        <th scope="col" width="20%">Trasporte/Servicio</th>
+                                        <th scope="col" class="d-none d-sm-table-cell" width="50%">Transportista</th>
+                                        <th scope="col" class="d-none d-sm-table-cell" width="50%">Tamaño</th>
+        
+                                        <th scope="col" width="10%" class="text-right">Refrigeracion</th>
+                                        <th scope="col" width="8%" class="text-right">Tarifa</th>
+                                        <th scope="col" width="10%" class="text-right">Total</th>
+                                    </tr>
+                                </thead>
+<br>
+                                <tbody>
+                                    <tr>
+
+                                      
+
+                                        <td class="text-left">1</td>
+                                        <td class="item_name">Trasporte</td>
+                                        <td class="item_name"> {{soli.transporte.transportista}}</td>
+                                        <td class="item_desc d-none d-sm-table-cell">{{soli.transporte.get_tamaño_display}}</td>
+
+
+                                        {% if soli.transporte.refrigeracion is True %}
+                                        <td class="text-right">Si</td>
+                                        {% else %}
+
+                                        <td class="text-right">No</td>
+
+                                        {% endif %}
+                                      
+
+
+
+                     
+
+                                        <td class="col-md-1" style="text-align: center"> ${{soli.transporte.tarifa|intcomma}}</td>
+                                     
+
+
+                                        <td class="text-right">${{soli.transporte.tarifa|intcomma}}</td>
+                                        
+
+
+                                        
+                                    </tr>
+
+                                   
+
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-5">
+                            </div>
+        
+                            <div class="col-lg-4 col-sm-5 ml-auto">
+                                <table class="table table-sm table-clear">
+                                    <tbody>
+
+                                    
+                                        <tr>
+                                            <td class="left">
+                                                <strong>Subtotal</strong>
+                                            </td>
+                                            <td class="text-right bg-light">$ {{subtotal}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left">
+                                                <strong>Impuesto (0.03 %)</strong>
+                                            </td>
+                                            <td class="text-right bg-light">$ {{impuesto}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="left">
+                                                <strong>Total</strong>
+                                            </td>
+                                            <td class="text-right bg-light">
+                                                <strong>$ {{total}}</strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+        
+                            </div>
+    
+                        </div>
+        
+                    </div>
+
+                    <div >
+                        
+                    <form style="padding-left: 0%;" action="{% url 'ComprobantePDF' soli.pk%}" method="POST" >
+                        {% csrf_token %}
+                            <a>descargar</a>
+                            <div>   </div>
+                            <button class="btn btn-primary" type="submit" name="btnExel" value=""><iconify-icon icon="material-symbols:sim-card-download-rounded"></iconify-icon></button>
+            
+            
+                      </form>
+
+                      <div class="footer container-fluid mt-3 bg-light">
+                        <div class="row">
+                            <div class="col footer-app">&copy; Todos los derechos reservados.<span class="brand-name"></span></div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+
+
+
+
+
+
+
+
+{% endblock %}
