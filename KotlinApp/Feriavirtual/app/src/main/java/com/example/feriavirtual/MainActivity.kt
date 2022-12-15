@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
     private var progressBar1:ProgressBar?=null
     private var navegador:WebView?=null
     private var textReconectar:TextView?=null
-    private var ulrFeria = "http://192.168.1.15:81/"
-    private var urlRestar = "http://192.168.1.15:81/"
+    private var ulrFeria = "http://54.227.30.146:82/"
+    private var urlRestar = "http://54.227.30.146:82/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         progressBar1 = findViewById(R.id.id_progess)
         textReconectar = findViewById(R.id.textView2)
 
-        navegador?.loadUrl(ulrFeria+"login1/")
+        navegador?.loadUrl(ulrFeria+"login/")
         cargaView = false
         textReconectar?.isInvisible = true
         navegador?.webChromeClient = object : WebChromeClient(){
@@ -51,11 +51,11 @@ class MainActivity : AppCompatActivity() {
 
 
             override fun onLoadResource(view: WebView?, url: String?) {
-                if (navegador?.url.toString() == "http://192.168.1.15:81/login1/") {
+                if (navegador?.url.toString() == "http://54.227.30.146:82//login/") {
                 }
                 else{
                     super.onLoadResource(view, url)
-                    navegador?.isInvisible = true
+                    navegador?.isInvisible = false
                     progressBar1?.isInvisible = false
                     textReconectar?.isInvisible = true
                 }
@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                if (navegador?.url.toString() == "http://192.168.1.15:81/login1/"){
-                    navegador?.loadUrl ("http://192.168.1.15:81/login/")
+                if (navegador?.url.toString() == "http://54.227.30.146:82//login/"){
+                    navegador?.loadUrl ("http://54.227.30.146:82//login/")
                 }
                 if (cargaView == true){
 
@@ -153,7 +153,7 @@ class MainActivity : AppCompatActivity() {
             dManager.enqueue(request)
         })
 
-
+        navegador?.isInvisible = false
 
 
 
@@ -211,7 +211,7 @@ class MainActivity : AppCompatActivity() {
         urlRestar = navegador?.url.toString()
         navegador?.settings?.javaScriptEnabled=true
         navegador?.loadUrl(urlRestar)
-
+        navegador?.isInvisible = false
 
 
     }
@@ -221,7 +221,7 @@ class MainActivity : AppCompatActivity() {
 
         navegador?.settings?.javaScriptEnabled=true
         navegador?.loadUrl(ulrFeria)
-
+        navegador?.isInvisible = false
 
 
     }
